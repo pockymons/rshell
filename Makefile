@@ -1,4 +1,4 @@
-CXXFLAGS = -Wall -Werror -ansi -pedantic
+CXXFLAGS = -std=c++11 -Wall -Werror -pedantic
 
 all: rshell
 rshell: 
