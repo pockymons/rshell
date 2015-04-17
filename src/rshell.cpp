@@ -18,35 +18,40 @@ int main()
 	{
 		cout << "$"; // Prints command prompt
 		string commandLine;
-		char* arguments[];
 		getline(cin, commandLine);
 
 		// Accounts for comments by removing parts that are comments
 		// TODO: Account for escape character + comment (\#)
-		if(commandLine.find(" #") != -1)
+		if(commandLine.find(" #") != string::npos)
 		{
 			commandLine = commandLine.substr(commandLine.find(" #"));
 		}
 
 		// Finds locations of connectors; a && b, && has a location of 3
-		vector<int> connectorLocs;
+		vector<unsigned int> connectorLocs;
 		unsigned int marker = 0; // Marks location to start find() from
-		while((int loc = commandLine.find("&&", marker)) != -1) 
+		unsigned int loc = commandLine.find("&&", marker);
+		while(loc != string::npos) 
 		{
 			connectorLocs.push_back(loc);
 			marker = loc + 2; // Starts searching after "&&"
+			loc = commandLine.find("&&", marker);
 		}
 		marker = 0;
-		while((int loc = commandLine.find("||", marker)) != -1) 
+		loc = commandLine.find("||", marker);
+		while(loc != string::npos) 
 		{
 			connectorLocs.push_back(loc); 
 			marker = loc + 2; // Starts searching after "||"
+			loc = commandLine.find("||", marker);
 		}
 		marker = 0;
-		while((int loc = commandLine.find(";", marker)) != -1) 
+		loc = commandLine.find(";", marker);
+		while(loc != string::npos)
 		{
 			connectorLocs.push_back(loc);
 			marker = loc + 1; // Starts searching after ";"
+			loc = commandLine.find(";", marker);
 		}
 		connectorLocs.push_back(0); // Will be sorted and put in beginning
 		sort(connectorLocs.begin(), connectorLocs.end()); // Sorted to find each subcommand substring
@@ -54,18 +59,19 @@ int main()
 		
 		// Runs through subcommands and runs each one
 		// Works for connectors with nothing between them (tokenizer will have "" => syntax error, which is expected) 
-		for(int i = 0; i < connectorLocs.size() - 1; ++i) // # of subcommands == # of connectors - 1 (including 0, one-past-end)
+		for(unsigned int i = 0; i < connectorLocs.size() - 1; ++i) // # of subcommands == # of connectors - 1 (including 0, one-past-end)
 		{
 			string command;
 			vector<char*> args;
-			char_seperator<char> delim(" ");
-			tokenizer<char_seperator<char>> tok(commandLine, delim);
+			char_separator<char> delim(" ");
+			tokenizer<char_separator<char>> tok(commandLine, delim);
 			auto iter = tok.begin();
 			command = *iter;
 			++iter;
 			for(; iter != tok.end(); ++iter)
 			{
-				args.push_back(iter->c_str());
+				char* c = const_cast<char*> (iter->c_str());
+				args.push_back(c);
 			}
 		}
 	}
