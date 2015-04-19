@@ -38,6 +38,7 @@ int main()
 		cout << "$"; // Prints command prompt
 		string commandLine;
 		getline(cin, commandLine); 
+		cout << 1 << endl; // DEBUGGING
 
 		// Accounts for comments by removing parts that are comments
 		// TODO: Account for escape character + comment (\#)
@@ -45,36 +46,33 @@ int main()
 		{
 			commandLine = commandLine.substr(commandLine.find(" #"));
 		} 
+		cout << 2 << endl; // DEBUGGING
 
 		// Finds locations of connectors; a && b, && has a location of 3
 		vector<unsigned int> connectorLocs;
 		unsigned int marker = 0; // Marks location to start find() from
-		unsigned int loc = commandLine.find("&&", marker);
-		while(loc != string::npos) 
+		while(commandLine.find("&&", marker) != string::npos)//loc != string::npos) 
 		{
-			connectorLocs.push_back(loc);
-			marker = loc + 2; // Starts searching after "&&"
-			loc = commandLine.find("&&", marker);
+			connectorLocs.push_back(commandLine.find("&&", marker));
+			marker = commandLine.find("&&", marker) + 2;//loc + 2; // Starts searching after "&&"
+		}
+		cout << 4 << endl;
+		marker = 0;
+		while(commandLine.find("||", marker) != string::npos) 
+		{
+			connectorLocs.push_back(commandLine.find("||", marker)); 
+			marker = commandLine.find("||", marker) + 2; // Starts searching after "||"
 		}
 		marker = 0;
-		loc = commandLine.find("||", marker);
-		while(loc != string::npos) 
+		while(commandLine.find(";", marker) != string::npos)
 		{
-			connectorLocs.push_back(loc); 
-			marker = loc + 2; // Starts searching after "||"
-			loc = commandLine.find("||", marker);
-		}
-		marker = 0;
-		loc = commandLine.find(";", marker);
-		while(loc != string::npos)
-		{
-			connectorLocs.push_back(loc);
-			marker = loc + 1; // Starts searching after ";"
-			loc = commandLine.find(";", marker);
+			connectorLocs.push_back(commandLine.find(";", marker));
+			marker =  commandLine.find(";", marker)+ 1; // Starts searching after ";"
 		}
 		connectorLocs.push_back(0); // Will be sorted and put in beginning
 		sort(connectorLocs.begin(), connectorLocs.end()); // Sorted to find each subcommand substring
 		connectorLocs.push_back(commandLine.size()); // One past end index will act like connector
+		cout << 3 << endl; // DEBUGGING
 		
 		// Runs through subcommands and runs each one
 		// Works for connectors with nothing between them (tokenizer will have "" => syntax error, which is expected) 
