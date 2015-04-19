@@ -12,20 +12,39 @@
 using namespace std;
 using namespace boost;
 
+// Chose to write function comparing c-strings rather than copy to string then compare
+// Used for checking exit command
+bool cStringEqual(char* c1, char* c2)
+{
+	int i;
+	for(i = 0; c1[i] != '\n' && c2[i] != '\n'; ++i)
+	{
+		if(c1[i] != c2[i])
+		{
+			return false;
+		}
+	}
+	if(c1[i] != '\n' || c2[i] != '\n')
+	{
+		return false;
+	}
+	return true;
+}
+
 int main()
 {
 	while(true) //Shell runs until the exit command
 	{
 		cout << "$"; // Prints command prompt
 		string commandLine;
-		getline(cin, commandLine);
+		getline(cin, commandLine); 
 
 		// Accounts for comments by removing parts that are comments
 		// TODO: Account for escape character + comment (\#)
 		if(commandLine.find(" #") != string::npos)
 		{
 			commandLine = commandLine.substr(commandLine.find(" #"));
-		}
+		} 
 
 		// Finds locations of connectors; a && b, && has a location of 3
 		vector<unsigned int> connectorLocs;
@@ -61,17 +80,52 @@ int main()
 		// Works for connectors with nothing between them (tokenizer will have "" => syntax error, which is expected) 
 		for(unsigned int i = 0; i < connectorLocs.size() - 1; ++i) // # of subcommands == # of connectors - 1 (including 0, one-past-end)
 		{
-			string command;
+			// For parsing line of commands; delimiter is whitespace, each token will be a command or an argument
 			vector<char*> args;
 			char_separator<char> delim(" ");
-			tokenizer<char_separator<char>> tok(commandLine, delim);
-			auto iter = tok.begin();
-			command = *iter;
-			++iter;
-			for(; iter != tok.end(); ++iter)
+			tokenizer<char_separator<char>> tok(commandLine.substr(connectorLocs.at(i), connectorLocs.at(i+1) - connectorLocs.at(i)), delim);
+			// First token is the command, other tokens are the arguments
+			for(auto iter = tok.begin(); iter != tok.end(); ++iter)
 			{
-				char* c = const_cast<char*> (iter->c_str());
-				args.push_back(c);
+				args.push_back(const_cast<char*> (iter->c_str()));
+			}
+			
+			char* exitCString = const_cast<char*> ("exit"); 
+			if(cStringEqual(args.at(0), exitCString)) // if command is exit, exit shell
+			{
+				exit(0);
+			}
+
+			// Executes commands/takes care of errors
+			int pid = fork();
+			if(pid == -1) // If fork fails
+			{
+				perror("Fork error");
+				exit(1);
+			}
+			else
+			{
+				if(pid == 0) // Child process
+				{
+					execvp(args.at(0), &args.at(0));
+					// Following don't run if execvp succeeds
+					perror("Command execution error");
+					_exit(1);
+				}
+				else // Parent process
+				{
+					int status; // Status isn't used but might use in future?
+					if(wait(&status) == -1) // If child process has error
+					{
+						perror("Child process error");
+						// exits if next connector is && or one-past-end element
+						// continues if next connector is ; or ||
+						if(connectorLocs.at(i+1) == commandLine.size() || commandLine.at(connectorLocs.at(i+1)) == '&')
+						{
+							break;
+						}
+					}
+				}
 			}
 		}
 	}
