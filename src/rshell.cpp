@@ -17,14 +17,14 @@ using namespace boost;
 bool cStringEqual(char* c1, char* c2)
 {
 	int i;
-	for(i = 0; c1[i] != '\n' && c2[i] != '\n'; ++i)
+	for(i = 0; c1[i] != '\0' && c2[i] != '\0'; ++i)
 	{
 		if(c1[i] != c2[i])
 		{
 			return false;
 		}
 	}
-	if(c1[i] != '\n' || c2[i] != '\n')
+	if(c1[i] != '\0' || c2[i] != '\0')
 	{
 		return false;
 	}
@@ -35,10 +35,9 @@ int main()
 {
 	while(true) //Shell runs until the exit command
 	{
-		cout << "$"; // Prints command prompt
+		cout << "$ "; // Prints command prompt
 		string commandLine;
 		getline(cin, commandLine); 
-		cout << 1 << endl; // DEBUGGING
 
 		// Accounts for comments by removing parts that are comments
 		// TODO: Account for escape character + comment (\#)
@@ -46,7 +45,6 @@ int main()
 		{
 			commandLine = commandLine.substr(commandLine.find(" #"));
 		} 
-		cout << 2 << endl; // DEBUGGING
 
 		// Finds locations of connectors; a && b, && has a location of 3
 		vector<unsigned int> connectorLocs;
@@ -56,7 +54,6 @@ int main()
 			connectorLocs.push_back(commandLine.find("&&", marker));
 			marker = commandLine.find("&&", marker) + 2;//loc + 2; // Starts searching after "&&"
 		}
-		cout << 4 << endl;
 		marker = 0;
 		while(commandLine.find("||", marker) != string::npos) 
 		{
@@ -72,7 +69,6 @@ int main()
 		connectorLocs.push_back(0); // Will be sorted and put in beginning
 		sort(connectorLocs.begin(), connectorLocs.end()); // Sorted to find each subcommand substring
 		connectorLocs.push_back(commandLine.size()); // One past end index will act like connector
-		cout << 3 << endl; // DEBUGGING
 		
 		// Runs through subcommands and runs each one
 		// Works for connectors with nothing between them (tokenizer will have "" => syntax error, which is expected) 
@@ -89,6 +85,8 @@ int main()
 			}
 			
 			char* exitCString = const_cast<char*> ("exit"); 
+				
+			//cout << cStringEqual(args.at(0), exitCString) << endl;
 			if(cStringEqual(args.at(0), exitCString)) // if command is exit, exit shell
 			{
 				exit(0);
