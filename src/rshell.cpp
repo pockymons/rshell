@@ -72,12 +72,14 @@ int main()
 		
 		// Runs through subcommands and runs each one
 		// Works for connectors with nothing between them (tokenizer will have "" => syntax error, which is expected) 
-		for(unsigned int i = 0; i < connectorLocs.size() - 1; ++i) // # of subcommands == # of connectors - 1 (including 0, one-past-end)
+		// # of subcommands == # of connectors - 1 (including 0, one-past-end)
+		for(unsigned int i = 0; i < connectorLocs.size() - 1; ++i) 
 		{
 			// For parsing line of commands; delimiter is whitespace, each token will be a command or an argument
 			vector<char*> args;
 			char_separator<char> delim(" ");
-			tokenizer<char_separator<char>> tok(commandLine.substr(connectorLocs.at(i), connectorLocs.at(i+1) - connectorLocs.at(i)), delim);
+			tokenizer<char_separator<char>> tok(commandLine.substr(connectorLocs.at(i),
+				connectorLocs.at(i+1) - connectorLocs.at(i)), delim);
 			// First token is the command, other tokens are the arguments
 			for(auto iter = tok.begin(); iter != tok.end(); ++iter)
 			{
@@ -116,7 +118,8 @@ int main()
 						perror("Child process error");
 						// exits if next connector is && or one-past-end element
 						// continues if next connector is ; or ||
-						if(connectorLocs.at(i+1) == commandLine.size() || commandLine.at(connectorLocs.at(i+1)) == '&')
+						if(connectorLocs.at(i+1) == commandLine.size() ||
+							commandLine.at(connectorLocs.at(i+1)) == '&')
 						{
 							break;
 						}
