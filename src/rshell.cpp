@@ -75,16 +75,36 @@ int main()
 		// # of subcommands == # of connectors - 1 (including 0, one-past-end)
 		for(unsigned int i = 0; i < connectorLocs.size() - 1; ++i) 
 		{
+			int offset = 0;
+			if(commandLine.at(connectorLocs.at(i)) == '&' || commandLine.at(connectorLocs.at(i)) == '|')
+			{
+				offset = 2;
+			}
+			else
+			{
+				if(commandLine.at(connectorLocs.at(i)) == ';')
+				{
+					offset = 1;
+				}
+			}
+
+			//cout << commandLine.at(connectorLocs.at(i)) << endl; // DEBUGGING
+			//cout << offset << endl; // DEBUGGING
+			
 			// For parsing line of commands; delimiter is whitespace, each token will be a command or an argument
 			vector<char*> args;
-			char_separator<char> delim(" ");
-			tokenizer<char_separator<char>> tok(commandLine.substr(connectorLocs.at(i),
-				connectorLocs.at(i+1) - connectorLocs.at(i)), delim);
+			char_separator<char> sep(" ");
+			string subcommand = commandLine.substr(connectorLocs.at(i) + offset, connectorLocs.at(i+1) - connectorLocs.at(i) - offset);
+			//typedef tokenizer<char_separator<char>> tokenizer; // Used to use this
+			//cout << "sub: " << subcommand << endl; // DEBUGGING
+			tokenizer<char_separator<char>> tok(subcommand, sep);
 			// First token is the command, other tokens are the arguments
 			for(auto iter = tok.begin(); iter != tok.end(); ++iter)
 			{
+				// cout << "tok: " << *iter << endl; // DEBUGGING
 				args.push_back(const_cast<char*> (iter->c_str()));
 			}
+			args.push_back(NULL); // NULL terminating at the end of vector/array
 			
 			char* exitCString = const_cast<char*> ("exit"); 
 				
