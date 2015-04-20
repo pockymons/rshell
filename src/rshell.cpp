@@ -42,7 +42,7 @@ int main()
 		// Accounts for comments by removing parts that are comments
 		if(commandLine.find(" #") != string::npos)
 		{
-			commandLine = commandLine.substr(commandLine.find(" #"));
+			commandLine = commandLine.substr(0, commandLine.find(" #"));
 		} 
 
 		// Finds locations of connectors; a && b, && has a location of 3
