@@ -1,141 +1,168 @@
-Script started on Sun 19 Apr 2015 11:53:12 PM PDT
+Script started on Mon 20 Apr 2015 01:10:09 AM PDT
 ~
 jwong066@hammer $ cd CS100/Assn/rshell
 ~/CS100/Assn/rshell
-jwong066@hammer $ bin./[K[K/rshell 
-$ echo Test Variou      variuos   ous commands without connectors
+jwong066@hammer $ bi[K[Kbin/[K[K[K[Krs[K[Kbin/rshell 
+jwong066@hammer.cs.ucr.edu $ echo TS est V variuo  ous v commands without connectors
 Test various commands without connectors
-$ ls #Test ls
-a.out  bin  LICENSE  Makefile  README.md  rshelltest  src  tests
-$ pwd #Testp  pwd
+jwong066@hammer.cs.ucr.edu $ ls #Test ls
+a.out  bin  LICENSE  Makefile  README.md  src  tests
+jwong066@hammer.cs.ucr.edu $ pwd #Test pwd
 /home/csmajs/jwong066/CS100/Assn/rshell
-$ mkdir testDir #Testing mkdir
-$ touch test     estDir/test #Testing mkd     create a file
-$ rm -rf testDir #test       #Test flags together
-$ mkdir     ls  mkdir testDir #te                 echo need to repeat last 3
-need to repeat last 3
-$ mkdir testDir #Testing mkdir
-$ touch test #Testing create a file
-$ rm -rf testDir #Test flags toge                               ls
-a.out  bin  LICENSE  Makefile  README.md  rshelltest  src  test  testDir  tests
-$ rm test
-$ ls
-a.out  bin  LICENSE  Makefile  README.md  rshelltest  src  testDir  tests
-$ touch testDir/test
-$ rm -rf testDir #Test flags together
-$ mkdir     mkdir testDir #t T                ls
-a.out  bin  LICENSE  Makefile  README.md  rshelltest  src  tests
-$ mkdir testDir #testing mkdir
-$ rm -r -f #t Test e seperate flags
-$ echo asdf asdf assdf asdf asdf asdf asdf #Test echo
-asdf asdf assdf asdf asdf asdf asdf
-$ echo aa a a a a a aa a a  a a a a a a a a a a a a a a aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aa a a a a a aa a a a a a a a a a a a a a a a a aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-$ asdf #Nonexistent command
+jwong066@hammer.cs.ucr.edu $ mkdir       mkdir testDir #Testing mkdir
+jwong066@hammer.cs.ucr.edu $ touch test      testDir/test
+jwong066@hammer.cs.ucr.edu $ ls
+a.out  bin  LICENSE  Makefile  README.md  src  testDir	tests
+jwong066@hammer.cs.ucr.edu $ ls mkdir
+ls: cannot access mkdir: No such file or directory
+jwong066@hammer.cs.ucr.edu $ echoo    woops
+woops
+jwong066@hammer.cs.ucr.edu $ ls testDir	
+test
+jwong066@hammer.cs.ucr.edu $ rm -rf testDir #Testing flags together
+jwong066@hammer.cs.ucr.edu $ mkdir testDir #Testing mkdir
+jwong066@hammer.cs.ucr.edu $ touch test    stDir/test # 
+jwong066@hammer.cs.ucr.edu $ ls
+a.out  bin  LICENSE  Makefile  README.md  src  testDir	tests
+jwong066@hammer.cs.ucr.edu $ ls testDir
+test
+jwong066@hammer.cs.ucr.edu $ r rm -r -r f testDir #Testing seperat e  e c flags
+jwong066@hammer.cs.ucr.edu $ ls
+a.out  bin  LICENSE  Makefile  README.md  src  tests
+jwong066@hammer.cs.ucr.edu $ echo asdf assdf asdf asdf asdfasdf @ #Test echo
+asdf assdf asdf asdf asdfasdf
+jwong066@hammer.cs.ucr.edu $ echo a a a aa a a a a a aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa a a a a aa a a a a #Long commen      argument
+a a a aa a a a a a aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa a a a a aa a a a a
+jwong066@hammer.cs.ucr.edu $ adf     adf     asdf #Nonexistent command
 Command execution error: No such file or directory
-$ ls -y #Nonexistent flag
+jwong066@hammer.cs.ucr.edu $ ls 0y  -y #n Nonexistent flag/arug  gument
 ls: invalid option -- 'y'
 Try `ls --help' for more information.
-$ ls          -a -          -t     -x #spaces
-.	  testDir  tests  bin  src  rshelltest	a.out  .git  ..  README.md
-Makefile  LICENSE
-$ 
-$ 
-$ echo Test comments #c Comm   OMMENTS
+jwong066@hammer.cs.ucr.edu $ ls               -                  -  t                      a              -t         -x #spaces
+.  tests  a.out  bin  src  README.md  .git  ..	Makefile  LICENSE
+jwong066@hammer.cs.ucr.edu $ echo Test comments                  
+jwong066@hammer.cs.ucr.edu $ 
+jwong066@hammer.cs.ucr.edu $ echo Test comments #COMEM  MENTS
 Test comments
-$ #No commands
+jwong066@hammer.cs.ucr.edu $ #No C commands
 Command execution error: No such file or directory
-$ 
-$ ls -a #c Comment after command
-.   a.out  .git     Makefile   rshelltest  testDir
-..  bin    LICENSE  README.md  src	   tests
-$ ls  #Should be error
+jwong066@hammer.cs.ucr.edu $ ls -a #c Comment after command
+.  ..  a.out  bin  .git  LICENSE  Makefile  README.md  src  tests
+jwong066@hammer.cs.ucr.edu $ ls  #Should be error  ;  # should have space behind
 Command execution error: No such file or directory
-$ ls #c Command within comment  : ls
-a.out  bin  LICENSE  Makefile  README.md  rshelltest  src  testDir  tests
-$ ls #  Test longgggggggggggggggggggggggggggggggggggggggggggggggggggggg comment
-a.out  bin  LICENSE  Makefile  README.md  rshelltest  src  testDir  tests
-$ echo Test connectors                      
-$ 
-$ echo Test connectors #Conn     
+jwong066@hammer.cs.ucr.edu $ ls  ls #Command withini  comment: ls
+a.out  bin  LICENSE  Makefile  README.md  src  tests
+jwong066@hammer.cs.ucr.edu $ ls #Test longggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg comment
+a.out  bin  LICENSE  Makefile  README.md  src  tests
+jwong066@hammer.cs.ucr.edu $ 
+jwong066@hammer.cs.ucr.edu $ 
+jwong066@hammer.cs.ucr.edu $ echo Test connectors
 Test connectors
-$ true  ||ls
-$ false||ls
-a.out  bin  LICENSE  Makefile  README.md  rshelltest  src  testDir  tests
-$ tre ue&& &  ls
-a.out  bin  LICENSE  Makefile  README.md  rshelltest  src  testDir  tests
-$ false&&ls
-$ ls;ls
-a.out  bin  LICENSE  Makefile  README.md  rshelltest  src  testDir  tests
-a.out  bin  LICENSE  Makefile  README.md  rshelltest  src  testDir  tests
-$ true      ||         ls
-$ false      || ls
-a.out  bin  LICENSE  Makefile  README.md  rshelltest  src  testDir  tests
-$ truue &&    ls
-Command execution error: No such file or directory
-$ fl alse &&                                  true        && ls        ls
-a.out  bin  LICENSE  Makefile  README.md  rshelltest  src  testDir  tests
-$ false       && ls          ls
-$ ls;ls
-a.out  bin  LICENSE  Makefile  README.md  rshelltest  src  testDir  tests
-a.out  bin  LICENSE  Makefile  README.md  rshelltest  src  testDir  tests
-$ ls        ; ls
-a.out  bin  LICENSE  Makefile  README.md  rshelltest  src  testDir  tests
-a.out  bin  LICENSE  Makefile  README.md  rshelltest  src  testDir  tests
-$ false ||false|| false||false || ls
-a.out  bin  LICENSE  Makefile  README.md  rshelltest  src  testDir  tests
-$ true || ls || ls 
-$ fl alse && ls && ls
-$ true && truye  e && true * && l;s  s
-a.out  bin  LICENSE  Makefile  README.md  rshelltest  src  testDir  tests
-$ ls  ;ls;ls;ls;ls
-a.out  bin  LICENSE  Makefile  README.md  rshelltest  src  testDir  tests
-a.out  bin  LICENSE  Makefile  README.md  rshelltest  src  testDir  tests
-a.out  bin  LICENSE  Makefile  README.md  rshelltest  src  testDir  tests
-a.out  bin  LICENSE  Makefile  README.md  rshelltest  src  testDir  tests
-a.out  bin  LICENSE  Makefile  README.md  rshelltest  src  testDir  tests
-$ ls && ls && false || ls ; ls && ls; false || ls #chaning    ining
-a.out  bin  LICENSE  Makefile  README.md  rshelltest  src  testDir  tests
-a.out  bin  LICENSE  Makefile  README.md  rshelltest  src  testDir  tests
-a.out  bin  LICENSE  Makefile  README.md  rshelltest  src  testDir  tests
-a.out  bin  LICENSE  Makefile  README.md  rshelltest  src  testDir  tests
-a.out  bin  LICENSE  Makefile  README.md  rshelltest  src  testDir  tests
-a.out  bin  LICENSE  Makefile  README.md  rshelltest  src  testDir  tests
-$ echo Exit Tests
+jwong066@hammer.cs.ucr.edu $ true||; ls
+jwong066@hammer.cs.ucr.edu $ false||ls
+a.out  bin  LICENSE  Makefile  README.md  src  tests
+jwong066@hammer.cs.ucr.edu $ true&&ls
+a.out  bin  LICENSE  Makefile  README.md  src  tests
+jwong066@hammer.cs.ucr.edu $ false&&ls
+jwong066@hammer.cs.ucr.edu $ ls;ls
+a.out  bin  LICENSE  Makefile  README.md  src  tests
+a.out  bin  LICENSE  Makefile  README.md  src  tests
+jwong066@hammer.cs.ucr.edu $ true      ||    ls #With spaces
+jwong066@hammer.cs.ucr.edu $ false            || ls #       ls
+a.out  bin  LICENSE  Makefile  README.md  src  tests
+jwong066@hammer.cs.ucr.edu $ true    &&     ls
+a.out  bin  LICENSE  Makefile  README.md  src  tests
+jwong066@hammer.cs.ucr.edu $ false      && ls
+jwong066@hammer.cs.ucr.edu $ ls       ;    ls
+a.out  bin  LICENSE  Makefile  README.md  src  tests
+a.out  bin  LICENSE  Makefile  README.md  src  tests
+jwong066@hammer.cs.ucr.edu $ false  || fa   false|| false|| false      false || ls
+a.out  bin  LICENSE  Makefile  README.md  src  tests
+jwong066@hammer.cs.ucr.edu $ true || ls || ls || ,,s   ls
+jwong066@hammer.cs.ucr.edu $ false && ls && ls && ls && ls
+jwong066@hammer.cs.ucr.edu $ true && true && trye && trye            uye  e && ls
+a.out  bin  LICENSE  Makefile  README.md  src  tests
+jwong066@hammer.cs.ucr.edu $ ls;ls;ls;ls;ls ; ls    ; ls ; ls
+a.out  bin  LICENSE  Makefile  README.md  src  tests
+a.out  bin  LICENSE  Makefile  README.md  src  tests
+a.out  bin  LICENSE  Makefile  README.md  src  tests
+a.out  bin  LICENSE  Makefile  README.md  src  tests
+a.out  bin  LICENSE  Makefile  README.md  src  tests
+a.out  bin  LICENSE  Makefile  README.md  src  tests
+a.out  bin  LICENSE  Makefile  README.md  src  tests
+jwong066@hammer.cs.ucr.edu $ ls && ls && false || ls ; ls   && ls; false || ls #chaining
+a.out  bin  LICENSE  Makefile  README.md  src  tests
+a.out  bin  LICENSE  Makefile  README.md  src  tests
+a.out  bin  LICENSE  Makefile  README.md  src  tests
+a.out  bin  LICENSE  Makefile  README.md  src  tests
+a.out  bin  LICENSE  Makefile  README.md  src  tests
+a.out  bin  LICENSE  Makefile  README.md  src  tests
+jwong066@hammer.cs.ucr.edu $ 
+jwong066@hammer.cs.ucr.edu $ 
+jwong066@hammer.cs.ucr.edu $ echo Exit Tests
 Exit Tests
-$ exit
+jwong066@hammer.cs.ucr.edu $ exit
 ~/CS100/Assn/rshell
 jwong066@hammer $ bin/rshell 
-$ exit a a a a
+jwong066@hammer.cs.ucr.edu $ ei xit a a a a a a a #should exit
 ~/CS100/Assn/rshell
 jwong066@hammer $ bin/rshell 
-$ ls exit #error
+jwong066@hammer.cs.ucr.edu $ ls exit # as an argument should have error
 ls: cannot access exit: No such file or directory
-$ exit && ls            ls ; l exit
-a.out  bin  LICENSE  Makefile  README.md  rshelltest  src  testDir  tests
+jwong066@hammer.cs.ucr.edu $ exit && ls #should exit
 ~/CS100/Assn/rshell
-jwong066@hammer $ exit[K[K[K[Kbin/rshell 
-$ exit && ls
-~/CS100/Assn/rshell
-jwong066@hammer $ bin/rshell 
-$ ls  ; ls ; exit
-a.out  bin  LICENSE  Makefile  README.md  rshelltest  src  testDir  tests
-a.out  bin  LICENSE  Makefile  README.md  rshelltest  src  testDir  tests
+jwong066@hammer $ rs[K[Kbin/rs
+bash: bin/rs: No such file or directory
 ~/CS100/Assn/rshell
 jwong066@hammer $ bin/rshell 
-$ eh cho m Miscellaneous Tests
+jwong066@hammer.cs.ucr.edu $ exit || ls #  should exit
+~/CS100/Assn/rshell
+jwong066@hammer $ bin/rshell 
+jwong066@hammer.cs.ucr.edu $ ls ; exit
+a.out  bin  LICENSE  Makefile  README.md  src  tests
+~/CS100/Assn/rshell
+jwong066@hammer $ bin/rshell 
+jwong066@hammer.cs.ucr.edu $ ls; ; ls ; exit
+a.out  bin  LICENSE  Makefile  README.md  src  tests
+a.out  bin  LICENSE  Makefile  README.md  src  tests
+~/CS100/Assn/rshell
+jwong066@hammer $ bin/rshell 
+jwong066@hammer.cs.ucr.edu $ 
+jwong066@hammer.cs.ucr.edu $ 
+jwong066@hammer.cs.ucr.edu $ echo Mi s iscellaneopu  us Tests
 Miscellaneous Tests
-$ &&  &&||||;;;;;;;|| ls #Only works for even #s of | or * &
-Command execution error: No such file or directory
-$ w echo woosp  ps          echo woosp  [s  p ps
-woops
-$ &&  ||| &&;;; ls #only works for even #s of | or &
-Command execution error: No such file or directory
-$ echo never mind
-never mind
-$ exit
+jwong066@hammer.cs.ucr.edu $ && ls     ls &&||||;;;;;||&&&& # ls o #Only works for even numbers a       s f               of | or &
+a.out  bin  LICENSE  Makefile  README.md  src  tests
+a.out  bin  LICENSE  Makefile  README.md  src  tests
+jwong066@hammer.cs.ucr.edu $ 
+jwong066@hammer.cs.ucr.edu $ 
+jwong066@hammer.cs.ucr.edu $ echo runnn ing rshell inside rshll
+running rshell inside rshll
+jwong066@hammer.cs.ucr.edu $ woops     echo woops type
+woops type
+jwong066@hammer.cs.ucr.edu $ echo running rshell inside rshell
+running rshell inside rshell
+jwong066@hammer.cs.ucr.edu $ bin/rshe	 ell
+jwong066@hammer.cs.ucr.edu $ ls
+a.out  bin  LICENSE  Makefile  README.md  src  tests
+jwong066@hammer.cs.ucr.edu $ pwd
+/home/csmajs/jwong066/CS100/Assn/rshell
+jwong066@hammer.cs.ucr.edu $ exit
+jwong066@hammer.cs.ucr.edu $ echo    
+jwong066@hammer.cs.ucr.edu $ 
+jwong066@hammer.cs.ucr.edu $ echo Now run command in current directory wi ho;  ile in rshll   e hell
+Now run command in current directory while in rshell
+jwong066@hammer.cs.ucr.edu $ echo I will run a.out which is rshll    ell (but didn't      wasn      in the current directory and is  was not renamed)
+I will run a.out which is rshell (but in the current directory and was not renamed)
+jwong066@hammer.cs.ucr.edu $ a ./a.out
+jwong066@hammer.cs.ucr.edu $ as  ls
+a.out  bin  LICENSE  Makefile  README.md  src  tests
+jwong066@hammer.cs.ucr.edu $ pwd
+/home/csmajs/jwong066/CS100/Assn/rshell
+jwong066@hammer.cs.ucr.edu $ exit
+jwong066@hammer.cs.ucr.edu $ exit
 ~/CS100/Assn/rshell
 jwong066@hammer $ exit
 exit
 
-Script done on Mon 20 Apr 2015 12:04:48 AM PDT
+Script done on Mon 20 Apr 2015 01:22:23 AM PDT

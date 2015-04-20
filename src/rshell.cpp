@@ -33,9 +33,25 @@ bool cStringEqual(char* c1, char* c2)
 
 int main()
 {
+	//Hostname/loginname won't change
+	char* loginName = getlogin();
+	if(!loginName)//Returns NULL if fails
+	{
+		perror("Login error");
+		exit(1);
+	}
+
+	char hostName[64];
+	int hostStatus = gethostname(hostName, sizeof(hostName));
+	if(hostStatus == -1)// hostatus is -1 for error
+	{
+		perror("Hostname error");
+		exit(1);
+	}
+
 	while(true) //Shell runs until the exit command
 	{
-		cout << "$ "; // Prints command prompt
+		cout << loginName << "@" << hostName << " $ "; // Prints command prompt
 		string commandLine;
 		getline(cin, commandLine); 
 		if(commandLine.size() == 0)

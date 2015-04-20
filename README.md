@@ -23,5 +23,13 @@ To run, type the following into the terminal, while you are in the rshell direct
 ```
 $ bin/rshell
 ```
-##Edge Behavior
+##Edge Cases
+*I chose to make comments only work if there is a space before the `#` symbol, just like bash does it.
+*Connectors are ordered from left to right. The command before a connector is checked for each connector. 
 ##Limitations/Bugs
+*Prompt only works for up to 64 characters.
+*If there is whitespace only after a connector, it will just act as if it is then end, instead of outputting an error message.
+*Pressing the up arrow key does not go to the previous command
+*Press tab does not auto-complete a command/directory
+*The `||` and `&&` connectors only work in even groupings. Otherwise, they are interpreted as commands or part of a command.
+*Comments only work if there is a command preceding them.
