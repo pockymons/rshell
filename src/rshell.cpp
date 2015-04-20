@@ -114,6 +114,12 @@ int main()
 			}
 			args.push_back(NULL); // NULL terminating at the end of vector/array
 			
+			//Blank command or consecutive connectors
+			if(args.size() == 1)
+			{
+				continue;
+			}
+			
 			char* exitCString = const_cast<char*> ("exit"); 
 				
 			//cout << cStringEqual(args.at(0), exitCString) << endl; // DEBUGGING
