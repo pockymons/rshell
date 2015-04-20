@@ -133,15 +133,34 @@ int main()
 				else // Parent process
 				{
 					int status; // Status isn't used but might use in future?
-					if(wait(&status) == -1) // If child process has error
+					int waitVar = wait(&status);
+					if(waitVar == -1) // If child process has error
 					{
 						perror("Child process error");
 						// exits if next connector is && or one-past-end element
 						// continues if next connector is ; or ||
-						if(connectorLocs.at(i+1) == commandLine.size() ||
-							commandLine.at(connectorLocs.at(i+1)) == '&')
+						
+					}
+					else
+					{
+						int exitStatus = WEXITSTATUS(status); // Checks whether returns 0/1 when exiting
+						if(exitStatus == 1) // If unsuccessful command
 						{
-							break;
+							if(connectorLocs.at(i+1) < commandLine.size() && 
+								commandLine.at(connectorLocs.at(i+1)) == '&')
+							{
+								//cout << commandLine.at(connectorLocs.at(i+1)) << endl; // DEBUGGING
+								break;
+							}
+						}
+						else
+						{
+							if(connectorLocs.at(i+1) < commandLine.size() && 
+								commandLine.at(connectorLocs.at(i+1)) == '|')
+							{
+								//cout << commandLine.at(connectorLocs.at(i+1)) << endl; // DEBUGGING
+								break;
+							}
 						}
 					}
 				}
