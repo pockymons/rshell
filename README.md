@@ -26,7 +26,10 @@ $ bin/rshell
 ##Edge Cases
 * I chose to make comments only work if there is a space before the `#` symbol, just like bash does it.
 * Connectors are ordered from left to right. The command before a connector is checked for each connector. There is no order of precedence.
-* Whitespace followed by a connector will have the same effect as a `;` connector.
+* Whitespace followed by a connector will have the same effect as a `;` connector. For example, the following code will have the same result as the `ls` command.
+```
+        && ls
+```
 
 ##Limitations/Bugs
 * Prompt only works for up to 64 characters.
@@ -40,4 +43,4 @@ $ bin/rshell
 ```
        ; ls
 ```
-will behave as though there is no whitespace and no `;` connector in the beginning and just run the `ls` command.
+	will behave as though there is no whitespace and no `;` connector in the beginning and just run the `ls` command.
