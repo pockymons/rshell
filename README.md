@@ -11,7 +11,7 @@ To install the libraries on Linux Mint, run `sudo apt-get install libboost-all-d
 
 Otherwise, download Boost from [www.boost.org/users/download/](www.boost.org/users/download/)
 ##Install/Run 
-To install, type the following into the terminal, in your chosen directory:
+To install, type the following into the terminal:
 ```
 $ git clone https://github.com/pockymons/rshell.git
 $ cd rshell
