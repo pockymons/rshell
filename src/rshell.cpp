@@ -40,7 +40,6 @@ int main()
 		getline(cin, commandLine); 
 
 		// Accounts for comments by removing parts that are comments
-		// TODO: Account for escape character + comment (\#)
 		if(commandLine.find(" #") != string::npos)
 		{
 			commandLine = commandLine.substr(commandLine.find(" #"));
@@ -75,7 +74,7 @@ int main()
 		// # of subcommands == # of connectors - 1 (including 0, one-past-end)
 		for(unsigned int i = 0; i < connectorLocs.size() - 1; ++i) 
 		{
-			int offset = 0;
+			int offset = 0; // Tells how much offset for connectors (&&, ||, ;)
 			if(commandLine.at(connectorLocs.at(i)) == '&' || commandLine.at(connectorLocs.at(i)) == '|')
 			{
 				offset = 2;
@@ -92,8 +91,9 @@ int main()
 			//cout << offset << endl; // DEBUGGING
 			
 			// For parsing line of commands; delimiter is whitespace, each token will be a command or an argument
-			vector<char*> args;
+			vector<string> strArgs;
 			char_separator<char> sep(" ");
+			// FOLLOWING LINE WILL BREAK IF USED DIRECTLY IN TOKENIZER
 			string subcommand = commandLine.substr(connectorLocs.at(i) + offset, connectorLocs.at(i+1) - connectorLocs.at(i) - offset);
 			//typedef tokenizer<char_separator<char>> tokenizer; // Used to use this
 			//cout << "sub: " << subcommand << endl; // DEBUGGING
@@ -101,19 +101,27 @@ int main()
 			// First token is the command, other tokens are the arguments
 			for(auto iter = tok.begin(); iter != tok.end(); ++iter)
 			{
-				// cout << "tok: " << *iter << endl; // DEBUGGING
-				args.push_back(const_cast<char*> (iter->c_str()));
+				//cout << "tok: " << *iter << endl; // DEBUGGING
+				strArgs.push_back(*iter);
+			}
+
+			// Copy strArgs to vector of c-strings
+			// NEED TO DO IT THIS WAY OR THERE'S ISSUES WITH POINTERS
+			vector<char*> args;
+			for(auto str : strArgs)
+			{
+				args.push_back(const_cast<char*> (str.c_str()));
 			}
 			args.push_back(NULL); // NULL terminating at the end of vector/array
 			
 			char* exitCString = const_cast<char*> ("exit"); 
 				
-			//cout << cStringEqual(args.at(0), exitCString) << endl;
+			//cout << cStringEqual(args.at(0), exitCString) << endl; // DEBUGGING
 			if(cStringEqual(args.at(0), exitCString)) // if command is exit, exit shell
 			{
 				exit(0);
 			}
-
+			
 			// Executes commands/takes care of errors
 			int pid = fork();
 			if(pid == -1) // If fork fails
@@ -125,7 +133,7 @@ int main()
 			{
 				if(pid == 0) // Child process
 				{
-					execvp(args.at(0), &args.at(0));
+					execvp(args.at(0), &(args[0]));
 					// Following don't run if execvp succeeds
 					perror("Command execution error");
 					_exit(1);
