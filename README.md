@@ -26,6 +26,7 @@ $ bin/rshell
 ##Edge Cases
 * I chose to make comments only work if there is a space before the `#` symbol, just like bash does it.
 * Connectors are ordered from left to right. The command before a connector is checked for each connector. 
+
 ##Limitations/Bugs
 * Prompt only works for up to 64 characters.
 * If there is whitespace only after a connector, it will just act as if it is then end, instead of outputting an error message.
