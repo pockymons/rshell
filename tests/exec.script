@@ -1,0 +1,141 @@
+Script started on Sun 19 Apr 2015 11:53:12 PM PDT
+~
+jwong066@hammer $ cd CS100/Assn/rshell
+~/CS100/Assn/rshell
+jwong066@hammer $ bin./[K[K/rshell 
+$ echo Test Variou      variuos   ous commands without connectors
+Test various commands without connectors
+$ ls #Test ls
+a.out  bin  LICENSE  Makefile  README.md  rshelltest  src  tests
+$ pwd #Testp  pwd
+/home/csmajs/jwong066/CS100/Assn/rshell
+$ mkdir testDir #Testing mkdir
+$ touch test     estDir/test #Testing mkd     create a file
+$ rm -rf testDir #test       #Test flags together
+$ mkdir     ls  mkdir testDir #te                 echo need to repeat last 3
+need to repeat last 3
+$ mkdir testDir #Testing mkdir
+$ touch test #Testing create a file
+$ rm -rf testDir #Test flags toge                               ls
+a.out  bin  LICENSE  Makefile  README.md  rshelltest  src  test  testDir  tests
+$ rm test
+$ ls
+a.out  bin  LICENSE  Makefile  README.md  rshelltest  src  testDir  tests
+$ touch testDir/test
+$ rm -rf testDir #Test flags together
+$ mkdir     mkdir testDir #t T                ls
+a.out  bin  LICENSE  Makefile  README.md  rshelltest  src  tests
+$ mkdir testDir #testing mkdir
+$ rm -r -f #t Test e seperate flags
+$ echo asdf asdf assdf asdf asdf asdf asdf #Test echo
+asdf asdf assdf asdf asdf asdf asdf
+$ echo aa a a a a a aa a a  a a a a a a a a a a a a a a aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aa a a a a a aa a a a a a a a a a a a a a a a a aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+$ asdf #Nonexistent command
+Command execution error: No such file or directory
+$ ls -y #Nonexistent flag
+ls: invalid option -- 'y'
+Try `ls --help' for more information.
+$ ls          -a -          -t     -x #spaces
+.	  testDir  tests  bin  src  rshelltest	a.out  .git  ..  README.md
+Makefile  LICENSE
+$ 
+$ 
+$ echo Test comments #c Comm   OMMENTS
+Test comments
+$ #No commands
+Command execution error: No such file or directory
+$ 
+$ ls -a #c Comment after command
+.   a.out  .git     Makefile   rshelltest  testDir
+..  bin    LICENSE  README.md  src	   tests
+$ ls  #Should be error
+Command execution error: No such file or directory
+$ ls #c Command within comment  : ls
+a.out  bin  LICENSE  Makefile  README.md  rshelltest  src  testDir  tests
+$ ls #  Test longgggggggggggggggggggggggggggggggggggggggggggggggggggggg comment
+a.out  bin  LICENSE  Makefile  README.md  rshelltest  src  testDir  tests
+$ echo Test connectors                      
+$ 
+$ echo Test connectors #Conn     
+Test connectors
+$ true  ||ls
+$ false||ls
+a.out  bin  LICENSE  Makefile  README.md  rshelltest  src  testDir  tests
+$ tre ue&& &  ls
+a.out  bin  LICENSE  Makefile  README.md  rshelltest  src  testDir  tests
+$ false&&ls
+$ ls;ls
+a.out  bin  LICENSE  Makefile  README.md  rshelltest  src  testDir  tests
+a.out  bin  LICENSE  Makefile  README.md  rshelltest  src  testDir  tests
+$ true      ||         ls
+$ false      || ls
+a.out  bin  LICENSE  Makefile  README.md  rshelltest  src  testDir  tests
+$ truue &&    ls
+Command execution error: No such file or directory
+$ fl alse &&                                  true        && ls        ls
+a.out  bin  LICENSE  Makefile  README.md  rshelltest  src  testDir  tests
+$ false       && ls          ls
+$ ls;ls
+a.out  bin  LICENSE  Makefile  README.md  rshelltest  src  testDir  tests
+a.out  bin  LICENSE  Makefile  README.md  rshelltest  src  testDir  tests
+$ ls        ; ls
+a.out  bin  LICENSE  Makefile  README.md  rshelltest  src  testDir  tests
+a.out  bin  LICENSE  Makefile  README.md  rshelltest  src  testDir  tests
+$ false ||false|| false||false || ls
+a.out  bin  LICENSE  Makefile  README.md  rshelltest  src  testDir  tests
+$ true || ls || ls 
+$ fl alse && ls && ls
+$ true && truye  e && true * && l;s  s
+a.out  bin  LICENSE  Makefile  README.md  rshelltest  src  testDir  tests
+$ ls  ;ls;ls;ls;ls
+a.out  bin  LICENSE  Makefile  README.md  rshelltest  src  testDir  tests
+a.out  bin  LICENSE  Makefile  README.md  rshelltest  src  testDir  tests
+a.out  bin  LICENSE  Makefile  README.md  rshelltest  src  testDir  tests
+a.out  bin  LICENSE  Makefile  README.md  rshelltest  src  testDir  tests
+a.out  bin  LICENSE  Makefile  README.md  rshelltest  src  testDir  tests
+$ ls && ls && false || ls ; ls && ls; false || ls #chaning    ining
+a.out  bin  LICENSE  Makefile  README.md  rshelltest  src  testDir  tests
+a.out  bin  LICENSE  Makefile  README.md  rshelltest  src  testDir  tests
+a.out  bin  LICENSE  Makefile  README.md  rshelltest  src  testDir  tests
+a.out  bin  LICENSE  Makefile  README.md  rshelltest  src  testDir  tests
+a.out  bin  LICENSE  Makefile  README.md  rshelltest  src  testDir  tests
+a.out  bin  LICENSE  Makefile  README.md  rshelltest  src  testDir  tests
+$ echo Exit Tests
+Exit Tests
+$ exit
+~/CS100/Assn/rshell
+jwong066@hammer $ bin/rshell 
+$ exit a a a a
+~/CS100/Assn/rshell
+jwong066@hammer $ bin/rshell 
+$ ls exit #error
+ls: cannot access exit: No such file or directory
+$ exit && ls            ls ; l exit
+a.out  bin  LICENSE  Makefile  README.md  rshelltest  src  testDir  tests
+~/CS100/Assn/rshell
+jwong066@hammer $ exit[K[K[K[Kbin/rshell 
+$ exit && ls
+~/CS100/Assn/rshell
+jwong066@hammer $ bin/rshell 
+$ ls  ; ls ; exit
+a.out  bin  LICENSE  Makefile  README.md  rshelltest  src  testDir  tests
+a.out  bin  LICENSE  Makefile  README.md  rshelltest  src  testDir  tests
+~/CS100/Assn/rshell
+jwong066@hammer $ bin/rshell 
+$ eh cho m Miscellaneous Tests
+Miscellaneous Tests
+$ &&  &&||||;;;;;;;|| ls #Only works for even #s of | or * &
+Command execution error: No such file or directory
+$ w echo woosp  ps          echo woosp  [s  p ps
+woops
+$ &&  ||| &&;;; ls #only works for even #s of | or &
+Command execution error: No such file or directory
+$ echo never mind
+never mind
+$ exit
+~/CS100/Assn/rshell
+jwong066@hammer $ exit
+exit
+
+Script done on Mon 20 Apr 2015 12:04:48 AM PDT

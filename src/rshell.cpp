@@ -38,6 +38,10 @@ int main()
 		cout << "$ "; // Prints command prompt
 		string commandLine;
 		getline(cin, commandLine); 
+		if(commandLine.size() == 0)
+		{
+			continue;
+		}
 
 		// Accounts for comments by removing parts that are comments
 		if(commandLine.find(" #") != string::npos)
