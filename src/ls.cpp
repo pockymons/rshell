@@ -5,6 +5,8 @@
 
 #include <vector>
 #include <string>
+#include <stack>
+#include <algorithm>
 
 using namespace std;
 
@@ -54,13 +56,29 @@ int main(int argc, char** argv)
 	{
 		fileParam.push_back("."); // Current directory, if no others specified
 	}
+
+	sort(fileParam.begin(), fileParam.end());
 	
 	for(auto str : fileParam)
 	{
+		vector<dirent*> dirEntries;
 		DIR* dirp;
 		if(-1 == (dirp = opendir(str.c_str())))
 		{
 			perror("Error in opening directory");
+			exit(1);
+		}
+
+		dirent* tempDirEnt;
+		errno = 0;
+		while(NULL != (tempDirEnt = readdir(dirp)))
+		{
+			dirEntries.push_back(tempDirEnt);
+		}
+
+		if(errno != 0)
+		{
+			perror("Error in reading directory");
 			exit(1);
 		}
 	}
