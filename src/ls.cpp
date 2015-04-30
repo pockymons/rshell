@@ -73,6 +73,11 @@ int main(int argc, char** argv)
 		errno = 0;
 		while(NULL != (tempDirEnt = readdir(dirp)))
 		{
+			// If points to hidden file and no -a
+			if(sizeof(tempDirEnt->d_name) > 0 && tempDirEnt->d_name[0] == '.' && !aFlag)
+			{
+				continue;
+			}
 			dirEntries.push_back(tempDirEnt);
 		}
 
