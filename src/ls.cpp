@@ -54,6 +54,16 @@ int main(int argc, char** argv)
 	{
 		fileParam.push_back("."); // Current directory, if no others specified
 	}
+	
+	for(auto str : fileParam)
+	{
+		DIR* dirp;
+		if(-1 == (dirp = opendir(str.c_str())))
+		{
+			perror("Error in opening directory");
+			exit(1);
+		}
+	}
 
 	return 0;
 }
