@@ -66,7 +66,7 @@ int main(int argc, char** argv)
 		if(-1 == (dirp = opendir(str.c_str())))
 		{
 			perror("Error in opening directory");
-			exit(1);
+			continue; // Continue to next parameter
 		}
 
 		dirent* tempDirEnt;
@@ -79,7 +79,13 @@ int main(int argc, char** argv)
 		if(errno != 0)
 		{
 			perror("Error in reading directory");
-			exit(1);
+			continue;
+		}
+
+		if(-1 == closedir(dirp))
+		{
+			perror("Error in closing directory");
+			continue;
 		}
 	}
 
