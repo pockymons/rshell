@@ -5,6 +5,7 @@
 #include <sys/ioctl.h>
 #include <cmath>
 #include <unistd.h>
+#include <iomanip>
 
 #include <vector>
 #include <string>
@@ -44,10 +45,9 @@ bool compDirent(dirent* d1, dirent* d2)
 void printFileNames(vector<dirent*> &d, unsigned int maxLength, unsigned int totalLength, unsigned int winWidth)
 {
 	// If the total length of all file names + 2 spaces between are less than winlength
-	// totalLength is found from c-string/sizeof so it includes '\0'
-	// the extra size from '\0' contributes to 1 space for the purpose of boolean exp.
+	// 2 * d.size() accounts for spaces after each string
 	sort(d.begin(), d.end(), compDirent);
-	if(totalLength + d.size() <= winWidth)
+	if(totalLength + 2 * d.size() <= winWidth)
 	{
 		for(auto ent : d)
 		{
@@ -56,7 +56,38 @@ void printFileNames(vector<dirent*> &d, unsigned int maxLength, unsigned int tot
 	}
 	else
 	{
-		// TODO
+		// Prints in columns, if not enough space in one line
+		unsigned int columnWidth = maxLength + 2;
+		unsigned int numColumns = winWidth / columnWidth;
+		// For if a file is longer than window width 
+		if(numColumns == 0)
+		{
+			numColumns = 1;
+		}
+		unsigned int numRows = ceil(static_cast<double>(d.size()) / numColumns);
+
+		unsigned int counter = 0;
+		for(unsigned int i  = 0; i < numRows; ++i)
+		{
+			for(unsigned int j = 0; j < numColumns; ++j, ++counter)
+			{
+				// Mainly for last entry to exit out of loop
+				if(counter >= d.size())
+				{
+					break;
+				}
+				// Needed when columnWidth is longer than window width
+				if(columnWidth > winWidth)
+				{
+					cout << d.at(counter)->d_name;
+				}
+				else
+				{
+					cout << left << setw(columnWidth) << d.at(counter)->d_name;
+				}
+			}
+			cout << endl;
+		}
 	}
 	cout << endl;
 }
