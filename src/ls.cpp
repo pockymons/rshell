@@ -2,13 +2,35 @@
 #include <sys/types.h>
 #include <dirent.h>
 #include <errno.h>
+#include <sys/ioctl.h>
+#include <cmath>
 
 #include <vector>
 #include <string>
 #include <stack>
 #include <algorithm>
 
-using namespace std;
+using namespace std
+
+// Prints names of files in vector
+void printFileNames(vector<dirent*> d, int maxLength, int winLength)
+{
+	for(auto ent : d)
+	{
+		cout << ent->d_name << setw(maxLength);
+	}
+	cout << endl;
+}
+
+// Prints in long form
+void printLongForm(vector<dirent* d)
+{
+}
+
+// Prints recursively
+void printRecursive(vector<dirent*> d)
+{
+}
 
 int main(int argc, char** argv)
 {
@@ -91,6 +113,19 @@ int main(int argc, char** argv)
 		{
 			perror("Error in closing directory");
 			continue;
+		}
+	}
+
+	if(RFlag)
+	{
+	}
+	else
+	{
+		if(lFlag)
+		{
+		}
+		else
+		{
 		}
 	}
 
