@@ -10,8 +10,35 @@
 #include <string>
 #include <stack>
 #include <algorithm>
+#include <cstring>
 
 using namespace std;
+
+bool compDirent(dirent* d1, dirent* d2)
+{
+	char arr1[256] = {'a'};
+	char arr2[256] = {'a'};
+	char* d1Str = arr1;
+	char* d2Str = arr2;
+
+
+	strcpy(d1Str, d1->d_name);
+	strcpy(d2Str,d2->d_name);
+	if(d1Str[0] == '.')
+	{
+		strcpy(d1Str, (d1->d_name) + 1);
+	}
+	if(d2Str[0] == '.')
+	{
+		strcpy(d2Str, (d2->d_name) + 1);
+	}
+	for(unsigned int i = 0; i < strlen(d1Str); ++i)
+	{
+		d1Str[i] = toupper(d1Str[i]);
+		d2Str[i] = toupper(d2Str[i]);
+	}
+	return strcmp(d1Str, d2Str) < 0;
+}
 
 // Prints names of files in vector
 void printFileNames(vector<dirent*> &d, unsigned int maxLength, unsigned int totalLength, unsigned int winWidth)
@@ -19,7 +46,7 @@ void printFileNames(vector<dirent*> &d, unsigned int maxLength, unsigned int tot
 	// If the total length of all file names + 2 spaces between are less than winlength
 	// totalLength is found from c-string/sizeof so it includes '\0'
 	// the extra size from '\0' contributes to 1 space for the purpose of boolean exp.
-	cout << totalLength << " " << d.size() << endl;
+	sort(d.begin(), d.end(), compDirent);
 	if(totalLength + d.size() <= winWidth)
 	{
 		for(auto ent : d)
@@ -68,7 +95,7 @@ int main(int argc, char** argv)
 		if(argv[i][0] == '-')
 		{
 			// Accounts for flags like -laR, -lR, etc.
-			for(int j = 1; argv[i][j] != '\n'; ++j)
+			for(int j = 1; argv[i][j] != '\0'; ++j)
 			{
 				if(argv[i][j] == 'a')
 				{
@@ -127,7 +154,7 @@ int main(int argc, char** argv)
 			}
 			dirEntries.push_back(tempDirEnt);
 
-			unsigned int tempSize = sizeof(tempDirEnt->d_name);
+			unsigned int tempSize = strlen(tempDirEnt->d_name); 
 			if(tempSize > maxLength)
 			{
 				maxLength = tempSize;
