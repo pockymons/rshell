@@ -6,6 +6,8 @@
 #include <cmath>
 #include <unistd.h>
 #include <iomanip>
+#include <sys/stat.h>
+#include <pwd.h>
 
 #include <vector>
 #include <string>
@@ -92,9 +94,28 @@ void printFileNames(vector<dirent*> &d, unsigned int maxLength, unsigned int tot
 	cout << endl;
 }
 
+unsigned int integerWidth(unsigned int n)
+{
+	unsigned int num = n;
+	unsigned int ans = 1;
+	while(num > 9)
+	{
+		++ans;
+		num /= 10;
+	}
+	return ans;
+}
 // Prints in long form
 void printLongForm(vector<dirent*> d)
 {
+	//unsigned int hardLinkWidth = 0;
+	//unsigned int uWidth = 0;
+	//unsigned int gWidth = 0;
+	//unsigned int tWidth = 0;
+
+	//for(auto ent : d)
+	//{
+	//}
 }
 
 // Prints recursively
@@ -161,16 +182,20 @@ int main(int argc, char** argv)
 
 	sort(fileParam.begin(), fileParam.end());
 	
-	for(auto str : fileParam)
+	for(unsigned int i = 0; i < fileParam.size(); ++i)
 	{
 		vector<dirent*> dirEntries;
 		DIR* dirp;
-		if(NULL == (dirp = opendir(str.c_str())))
+		if(NULL == (dirp = opendir(fileParam.at(i).c_str())))
 		{
 			perror("Error in opening directory");
 			continue; // Continue to next parameter
 		}
 
+		if(fileParam.size() > 1)
+		{
+			cout << fileParam.at(i) << ":" << endl;
+		}
 		dirent* tempDirEnt;
 		errno = 0;
 		// Following two lengths include '\0'
@@ -217,6 +242,10 @@ int main(int argc, char** argv)
 			{
 				printFileNames(dirEntries, maxLength, totalLength, winWidth);
 			}
+		}
+		if(i != fileParam.size() - 1)
+		{
+			cout << endl;
 		}
 	}
 
