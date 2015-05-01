@@ -94,6 +94,7 @@ void printFileNames(vector<dirent*> &d, unsigned int maxLength, unsigned int tot
 	cout << endl;
 }
 
+// Used to find hard link integer's width
 unsigned int integerWidth(unsigned int n)
 {
 	unsigned int num = n;
@@ -108,14 +109,31 @@ unsigned int integerWidth(unsigned int n)
 // Prints in long form
 void printLongForm(vector<dirent*> d)
 {
-	//unsigned int hardLinkWidth = 0;
-	//unsigned int uWidth = 0;
-	//unsigned int gWidth = 0;
-	//unsigned int tWidth = 0;
+	unsigned int hardLinkWidth = 0;
+	unsigned int uWidth = 0;
+	unsigned int gWidth = 0;
+	unsigned int tWidth = 0;
 
-	//for(auto ent : d)
-	//{
-	//}
+	for(auto ent : d)
+	{
+		struct stat s;
+		if(-1 == stat(ent->d_name, &s))
+		{
+			perror("Stat error");
+			exit(1);
+		}
+		unsigned int tempHLWidth = integerWidth(s.st_nlink);
+		if(hardLinkWidth < tempHLWidth)
+		{
+			hardLinkWidth = tempHLWidth;
+		}
+		struct passwd* pw = getpwuid(s.st_uid);
+		unsigned int tempUWidth = strlen(pw.pw_name);
+		if(uWidth < tempUWidth)
+		{
+			uWidth = tempUWidth;
+		}
+	}
 }
 
 // Prints recursively
