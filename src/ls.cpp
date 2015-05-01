@@ -8,6 +8,7 @@
 #include <iomanip>
 #include <sys/stat.h>
 #include <pwd.h>
+#include <grp.h>
 
 #include <vector>
 #include <string>
@@ -112,12 +113,15 @@ void printLongForm(vector<dirent*> d)
 	unsigned int hardLinkWidth = 0;
 	unsigned int uWidth = 0;
 	unsigned int gWidth = 0;
-	unsigned int tWidth = 0;
+	//unsigned int tWidth = 0;
+	cout << d.size() << endl;
 
 	for(auto ent : d)
 	{
 		struct stat s;
-		if(-1 == stat(ent->d_name, &s))
+		cout << ent->d_name << endl;
+		char* fileName = ent->d_name;
+		if(-1 == stat(fileName, &s))
 		{
 			perror("Stat error");
 			exit(1);
@@ -127,18 +131,70 @@ void printLongForm(vector<dirent*> d)
 		{
 			hardLinkWidth = tempHLWidth;
 		}
-		struct passwd* pw = getpwuid(s.st_uid);
-		unsigned int tempUWidth = strlen(pw.pw_name);
+		cout << ent->d_name << endl;
+		uid_t test = s.st_uid;
+		cout << test << endl;
+		cout << ent->d_name << endl;
+		struct passwd* pw ;
+		cout << ent->d_name << endl;
+		if(NULL == (pw = getpwuid(test)))
+		{
+			perror("Getting user name");
+			exit(1);
+		}
+		cout << test << endl;
+
+		cout << ent->d_name << endl;
+		unsigned int tempUWidth = strlen(pw->pw_name);
+		cout << tempUWidth << endl;
 		if(uWidth < tempUWidth)
 		{
 			uWidth = tempUWidth;
 		}
+
+		struct group* grp = getgrgid(s.st_gid);
+		unsigned int tempGWidth = strlen(grp->gr_name);
+		if(gWidth < tempGWidth)
+		{
+			gWidth = tempGWidth;
+		}
+	}
+
+	for(auto ent : d)
+	{
+		struct stat s;
+		cout << ent->d_name << endl;
+		char* fileName = ent->d_name;
+		if(-1 == stat(fileName, &s))
+		{
+			perror("Stat error");
+			exit(1);
+		}
+
+		cout << "total " << (s.st_blocks / 2) << endl;
+		cout << s.st_mode;
 	}
 }
 
 // Prints recursively
-void printRecursive(vector<dirent*> d)
+void printRecursive(vector<dirent*> d, char* parent, bool longForm)
 {
+	for(auto ent : d)
+	{
+		struct stat s;
+		char* fileName = ent->d_name;
+		if(-1 == stat(fileName, &s))
+		{
+			perror("Stat error");
+			exit(1);
+		}
+		if(!(S_ISDIR(s.st_mode)))
+		{
+		}
+		else
+		{
+		}
+	}
 }
 
 int main(int argc, char** argv)
@@ -250,11 +306,13 @@ int main(int argc, char** argv)
 
 		if(RFlag)
 		{
+			printRecursive(dirEntries, NULL, lFlag);
 		}
 		else
 		{
 			if(lFlag)
 			{
+				printLongForm(dirEntries);
 			}
 			else
 			{
