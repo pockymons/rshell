@@ -4,26 +4,38 @@
 #include <errno.h>
 #include <sys/ioctl.h>
 #include <cmath>
+#include <unistd.h>
 
 #include <vector>
 #include <string>
 #include <stack>
 #include <algorithm>
 
-using namespace std
+using namespace std;
 
 // Prints names of files in vector
-void printFileNames(vector<dirent*> d, int maxLength, int winLength)
+void printFileNames(vector<dirent*> &d, unsigned int maxLength, unsigned int totalLength, unsigned int winWidth)
 {
-	for(auto ent : d)
+	// If the total length of all file names + 2 spaces between are less than winlength
+	// totalLength is found from c-string/sizeof so it includes '\0'
+	// the extra size from '\0' contributes to 1 space for the purpose of boolean exp.
+	cout << totalLength << " " << d.size() << endl;
+	if(totalLength + d.size() <= winWidth)
 	{
-		cout << ent->d_name << setw(maxLength);
+		for(auto ent : d)
+		{
+			cout << ent->d_name << "  ";
+		}
+	}
+	else
+	{
+		// TODO
 	}
 	cout << endl;
 }
 
 // Prints in long form
-void printLongForm(vector<dirent* d)
+void printLongForm(vector<dirent*> d)
 {
 }
 
@@ -38,6 +50,16 @@ int main(int argc, char** argv)
 	bool lFlag = false;
 	bool RFlag = false;	
 	vector<string> fileParam;
+
+	unsigned int winWidth;
+	winsize ws;
+
+	if(-1 == (ioctl(STDOUT_FILENO, TIOCGWINSZ, &ws)))
+	{
+		perror("Finding window width error");
+		exit(1);
+	}
+	winWidth = ws.ws_col;
 	
 	// Loops through arguments looking for flags/files/directories
 	for(int i = 1; i < argc; ++i)
@@ -85,7 +107,7 @@ int main(int argc, char** argv)
 	{
 		vector<dirent*> dirEntries;
 		DIR* dirp;
-		if(-1 == (dirp = opendir(str.c_str())))
+		if(NULL == (dirp = opendir(str.c_str())))
 		{
 			perror("Error in opening directory");
 			continue; // Continue to next parameter
@@ -93,6 +115,9 @@ int main(int argc, char** argv)
 
 		dirent* tempDirEnt;
 		errno = 0;
+		// Following two lengths include '\0'
+		unsigned int maxLength = 0;
+		unsigned int totalLength = 0;
 		while(NULL != (tempDirEnt = readdir(dirp)))
 		{
 			// If points to hidden file and no -a
@@ -101,6 +126,13 @@ int main(int argc, char** argv)
 				continue;
 			}
 			dirEntries.push_back(tempDirEnt);
+
+			unsigned int tempSize = sizeof(tempDirEnt->d_name);
+			if(tempSize > maxLength)
+			{
+				maxLength = tempSize;
+			}
+			totalLength += tempSize;
 		}
 
 		if(errno != 0)
@@ -114,18 +146,19 @@ int main(int argc, char** argv)
 			perror("Error in closing directory");
 			continue;
 		}
-	}
 
-	if(RFlag)
-	{
-	}
-	else
-	{
-		if(lFlag)
+		if(RFlag)
 		{
 		}
 		else
 		{
+			if(lFlag)
+			{
+			}
+			else
+			{
+				printFileNames(dirEntries, maxLength, totalLength, winWidth);
+			}
 		}
 	}
 
