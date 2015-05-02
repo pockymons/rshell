@@ -15,13 +15,14 @@
 #include <stack>
 #include <algorithm>
 #include <cstring>
+#include <ctime>
 
 using namespace std;
-
+/*
 bool compDirent(dirent* d1, dirent* d2)
 {
-	char arr1[256] = {'a'};
-	char arr2[256] = {'a'};
+	char arr1[256]; //= {'a'};
+	char arr2[256]; //= {'a'};
 	char* d1Str = arr1;
 	char* d2Str = arr2;
 
@@ -42,6 +43,32 @@ bool compDirent(dirent* d1, dirent* d2)
 		d2Str[i] = toupper(d2Str[i]);
 	}
 	return strcmp(d1Str, d2Str) < 0;
+}*/
+
+bool compString(string s1, string s2)
+{
+	char arr1[256]; //= {'a'};
+	char arr2[256]; //= {'a'};
+	char* s1Str = arr1;
+	char* s2Str = arr2;
+
+
+	strcpy(s1Str, s1.c_str());
+	strcpy(s2Str,s2.c_str());
+	if(s1Str[0] == '.')
+	{
+		strcpy(s1Str, s1.substr(1).c_str());
+	}
+	if(s2Str[0] == '.')
+	{
+		strcpy(s2Str, s2.substr(1).c_str());
+	}
+	for(unsigned int i = 0; i < strlen(s1Str); ++i)
+	{
+		s1Str[i] = toupper(s1Str[i]);
+		s2Str[i] = toupper(s2Str[i]);
+	}
+	return strcmp(s1Str, s2Str) < 0;
 }
 
 // Prints names of files in vector
@@ -108,22 +135,23 @@ unsigned int integerWidth(unsigned int n)
 	return ans;
 }
 // Prints in long form
-void printLongForm(vector<dirent*> d)
+void printLongForm(vector<string> &d)
 {
+	sort(d.begin(), d.end(), compString);
+
 	unsigned int hardLinkWidth = 0;
 	unsigned int uWidth = 0;
 	unsigned int gWidth = 0;
+	unsigned int sWidth = 0;
+	unsigned int total = 0;
 	//unsigned int tWidth = 0;
-	cout << d.size() << endl;
 
-	for(auto ent : d)
+	for(auto str : d)
 	{
 		struct stat s;
-		cout << ent->d_name << endl;
-		char* fileName = ent->d_name;
-		if(-1 == stat(fileName, &s))
+		if(-1 == stat(str.c_str(), &s))
 		{
-			perror("Stat error");
+			perror("Stat error 1");
 			exit(1);
 		}
 		unsigned int tempHLWidth = integerWidth(s.st_nlink);
@@ -131,22 +159,19 @@ void printLongForm(vector<dirent*> d)
 		{
 			hardLinkWidth = tempHLWidth;
 		}
-		cout << ent->d_name << endl;
-		uid_t test = s.st_uid;
-		cout << test << endl;
-		cout << ent->d_name << endl;
+		unsigned int tempSzWidth = integerWidth(s.st_size);
+		if(sWidth < tempSzWidth)
+		{
+			sWidth = tempSzWidth;
+		}
 		struct passwd* pw ;
-		cout << ent->d_name << endl;
-		if(NULL == (pw = getpwuid(test)))
+		if(NULL == (pw = getpwuid(s.st_uid)))
 		{
 			perror("Getting user name");
 			exit(1);
 		}
-		cout << test << endl;
 
-		cout << ent->d_name << endl;
 		unsigned int tempUWidth = strlen(pw->pw_name);
-		cout << tempUWidth << endl;
 		if(uWidth < tempUWidth)
 		{
 			uWidth = tempUWidth;
@@ -158,22 +183,99 @@ void printLongForm(vector<dirent*> d)
 		{
 			gWidth = tempGWidth;
 		}
-	}
 
-	for(auto ent : d)
+		total += s.st_blocks;
+	}
+	total /= 2;
+	cout << "total " << total << endl;
+
+	for(unsigned int i = 0; i < d.size(); ++i)
 	{
+		string str = d.at(i);
 		struct stat s;
-		cout << ent->d_name << endl;
-		char* fileName = ent->d_name;
-		if(-1 == stat(fileName, &s))
+		if(-1 == stat(str.c_str(), &s))
 		{
-			perror("Stat error");
+			perror("Stat error 2");
 			exit(1);
 		}
+		if(S_ISREG(s.st_mode))
+		{
+			cout << '-';
+		}
+		else if(S_ISDIR(s.st_mode))
+		{
+			cout << 'd';
+		}
+		else if(S_ISCHR(s.st_mode))
+		{
+			cout << 'c';
+		}
+		else if(S_ISBLK(s.st_mode))
+		{
+			cout << 'b';
+		}
+		else if(S_ISFIFO(s.st_mode))
+		{
+			cout << 'p';
+		}
+		else if(S_ISLNK(s.st_mode))
+		{
+			cout << 'l';
+		}
+		else if(S_ISSOCK(s.st_mode))
+		{
+			cout << 's';
+		}
+		else
+		{
+			cout << '?';
+		}
 
-		cout << "total " << (s.st_blocks / 2) << endl;
-		cout << s.st_mode;
+		cout << ((s.st_mode & S_IRUSR) ? 'r' : '-');
+		cout << ((s.st_mode & S_IWUSR) ? 'w' : '-');
+		cout << ((s.st_mode & S_IXUSR) ? 'x' : '-');
+
+
+		cout << ((s.st_mode & S_IRGRP) ? 'r' : '-');
+		cout << ((s.st_mode & S_IWGRP) ? 'w' : '-');
+		cout << ((s.st_mode & S_IXGRP) ? 'x' : '-');
+
+		cout << ((s.st_mode & S_IROTH) ? 'r' : '-');
+		cout << ((s.st_mode & S_IWOTH) ? 'w' : '-');
+		cout << ((s.st_mode & S_IXOTH) ? 'x' : '-');
+
+		cout << " " << left;
+
+		cout << setw(hardLinkWidth + 1) << s.st_nlink;
+		cout << setw(uWidth + 1) << getpwuid(s.st_uid)->pw_name;
+		cout << setw(gWidth + 1) << getgrgid(s.st_gid)->gr_name;
+		cout << right;
+		cout << setw(sWidth) << s.st_size << " ";
+		cout << left;
+
+		struct tm* t = localtime(&(s.st_mtime));
+		char formattedTime[256];  
+		strftime(formattedTime, sizeof(formattedTime), "%b %d %R ", t); 
+		// Removes '0' on date
+		if(formattedTime[7] == '0')
+		{
+			formattedTime[7] = ' ';
+		}
+		if(formattedTime[10] == ' ')
+		{
+			formattedTime[10] = '0';
+		}
+		
+		cout << formattedTime;
+
+		cout << d.at(i);
+
+		if(i != d.size() - 1)
+		{
+			cout << endl;
+		}
 	}
+	cout << endl; 
 }
 
 // Prints recursively
@@ -259,6 +361,8 @@ int main(int argc, char** argv)
 	for(unsigned int i = 0; i < fileParam.size(); ++i)
 	{
 		vector<dirent*> dirEntries;
+		vector<string> dirEntriesLong; // Vectors of dirent doesn't work for long form function
+		// Will change everything to this form, time-permitting
 		DIR* dirp;
 		if(NULL == (dirp = opendir(fileParam.at(i).c_str())))
 		{
@@ -283,6 +387,7 @@ int main(int argc, char** argv)
 				continue;
 			}
 			dirEntries.push_back(tempDirEnt);
+			dirEntriesLong.push_back(tempDirEnt->d_name);
 
 			unsigned int tempSize = strlen(tempDirEnt->d_name); 
 			if(tempSize > maxLength)
@@ -312,7 +417,7 @@ int main(int argc, char** argv)
 		{
 			if(lFlag)
 			{
-				printLongForm(dirEntries);
+				printLongForm(dirEntriesLong);
 			}
 			else
 			{
