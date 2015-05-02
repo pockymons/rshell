@@ -18,32 +18,6 @@
 #include <ctime>
 
 using namespace std;
-/*
-bool compDirent(dirent* d1, dirent* d2)
-{
-	char arr1[256]; //= {'a'};
-	char arr2[256]; //= {'a'};
-	char* d1Str = arr1;
-	char* d2Str = arr2;
-
-
-	strcpy(d1Str, d1->d_name);
-	strcpy(d2Str,d2->d_name);
-	if(d1Str[0] == '.')
-	{
-		strcpy(d1Str, (d1->d_name) + 1);
-	}
-	if(d2Str[0] == '.')
-	{
-		strcpy(d2Str, (d2->d_name) + 1);
-	}
-	for(unsigned int i = 0; i < strlen(d1Str); ++i)
-	{
-		d1Str[i] = toupper(d1Str[i]);
-		d2Str[i] = toupper(d2Str[i]);
-	}
-	return strcmp(d1Str, d2Str) < 0;
-}*/
 
 bool compString(string s1, string s2)
 {
@@ -72,16 +46,16 @@ bool compString(string s1, string s2)
 }
 
 // Prints names of files in vector
-void printFileNames(vector<dirent*> &d, unsigned int maxLength, unsigned int totalLength, unsigned int winWidth)
+void printFileNames(vector<string> &d, unsigned int maxLength, unsigned int totalLength, unsigned int winWidth)
 {
 	// If the total length of all file names + 2 spaces between are less than winlength
 	// 2 * d.size() accounts for spaces after each string
-	sort(d.begin(), d.end(), compDirent);
+	sort(d.begin(), d.end(), compString);
 	if(totalLength + 2 * d.size() <= winWidth)
 	{
-		for(auto ent : d)
+		for(auto str : d)
 		{
-			cout << ent->d_name << "  ";
+			cout << str << "  ";
 		}
 	}
 	else
@@ -109,11 +83,11 @@ void printFileNames(vector<dirent*> &d, unsigned int maxLength, unsigned int tot
 				// Needed when columnWidth is longer than window width
 				if(columnWidth > winWidth)
 				{
-					cout << d.at(counter)->d_name;
+					cout << d.at(counter);
 				}
 				else
 				{
-					cout << left << setw(columnWidth) << d.at(counter)->d_name;
+					cout << left << setw(columnWidth) << d.at(counter);
 				}
 			}
 			cout << endl;
@@ -135,7 +109,7 @@ unsigned int integerWidth(unsigned int n)
 	return ans;
 }
 // Prints in long form
-void printLongForm(vector<string> &d)
+void printLongForm(vector<string> &d, string path)
 {
 	sort(d.begin(), d.end(), compString);
 
@@ -149,7 +123,9 @@ void printLongForm(vector<string> &d)
 	for(auto str : d)
 	{
 		struct stat s;
-		if(-1 == stat(str.c_str(), &s))
+		string fullPath = path;
+		fullPath.append(str);
+		if(-1 == stat(fullPath.c_str(), &s))
 		{
 			perror("Stat error 1");
 			exit(1);
@@ -192,8 +168,10 @@ void printLongForm(vector<string> &d)
 	for(unsigned int i = 0; i < d.size(); ++i)
 	{
 		string str = d.at(i);
+		string fullPath = path;
+		fullPath.append(str);
 		struct stat s;
-		if(-1 == stat(str.c_str(), &s))
+		if(-1 == stat(fullPath.c_str(), &s))
 		{
 			perror("Stat error 2");
 			exit(1);
@@ -279,22 +257,119 @@ void printLongForm(vector<string> &d)
 }
 
 // Prints recursively
-void printRecursive(vector<dirent*> d, char* parent, bool longForm)
+void printRecursive(vector<string> &d, string path, bool longForm, bool aFlag, bool first)
 {
-	for(auto ent : d)
+	if(first)
 	{
+		cout << path.substr(0, path.size() -1) << ":" << endl;
+	}
+	if(longForm)
+	{
+		printLongForm(d, path);
+	}
+	else
+	{
+		unsigned int winWidth;
+		winsize ws;
+		if(-1 == (ioctl(STDOUT_FILENO, TIOCGWINSZ, &ws)))
+		{
+			perror("Finding window width error");
+			exit(1);
+		}
+		winWidth = ws.ws_col;
+
+		unsigned int maxLength = 0;
+		unsigned int totalLength = 0;
+		for(auto str : d)
+		{
+			if(str.size() > maxLength)
+			{
+				maxLength = str.size();
+			}
+			totalLength += str.size();
+		}
+
+		printFileNames(d, maxLength, totalLength, winWidth);
+	}
+	cout << endl;
+	for(unsigned int i = 0; i < d.size(); ++i)
+	{
+		string str = d.at(i);
+		if(str.at(str.size() - 1) == '/')
+		{
+			str = str.substr(0, str.size() - 1);
+		}
+
+		if(!str.compare(".") || !str.compare(".."))
+		{
+			continue;
+		}
+
+		string fullPath = path;
+		fullPath.append(str);
+		/*if(fullPath.at(fullPath.size() - 1) != '/')
+		{
+			fullPath.append("/");
+		}*/
+
 		struct stat s;
-		char* fileName = ent->d_name;
-		if(-1 == stat(fileName, &s))
+		if(-1 == stat(fullPath.c_str(), &s))
 		{
 			perror("Stat error");
 			exit(1);
 		}
+
 		if(!(S_ISDIR(s.st_mode)))
 		{
 		}
 		else
 		{
+			vector<string> dirEntries;
+			DIR* dirp;
+			if(NULL == (dirp = opendir(fullPath.c_str())))
+			{
+				perror("Error in opening directory");
+				continue; // Continue to next parameter
+			}
+
+			cout << fullPath << ":" << endl;
+			dirent* tempDirEnt;
+			errno = 0;
+			//unsigned int maxLength = 0;
+			//unsigned int totalLength = 0;
+			while(NULL != (tempDirEnt = readdir(dirp)))
+			{
+				// If points to hidden file and no -a
+				if(sizeof(tempDirEnt->d_name) > 0 && tempDirEnt->d_name[0] == '.' && !aFlag)
+				{
+					continue;
+				}
+				string temp = tempDirEnt->d_name;
+				
+				dirEntries.push_back(tempDirEnt->d_name);
+
+				//unsigned int tempSize = strlen(tempDirEnt->d_name); 
+				//if(tempSize > maxLength)
+				//{
+					//maxLength = tempSize;
+				//}
+				//totalLength += tempSize;
+			}
+
+			if(errno != 0)
+			{
+				perror("Error in reading directory");
+				continue;
+			}
+
+			if(-1 == closedir(dirp))
+			{
+				perror("Error in closing directory");
+				continue;
+			}
+
+			fullPath.append("/");
+			printRecursive(dirEntries, fullPath, longForm, aFlag, false);
 		}
 	}
 }
@@ -360,9 +435,22 @@ int main(int argc, char** argv)
 	
 	for(unsigned int i = 0; i < fileParam.size(); ++i)
 	{
-		vector<dirent*> dirEntries;
-		vector<string> dirEntriesLong; // Vectors of dirent doesn't work for long form function
-		// Will change everything to this form, time-permitting
+		struct stat s;
+		if(-1 == stat(fileParam.at(i).c_str(), &s))
+		{
+			perror("Stat error");
+			exit(1);
+		}
+		if(!(S_ISDIR(s.st_mode)))
+		{
+			cout << fileParam.at(i) << endl;
+			if(i != fileParam.size() -1)
+			{
+				cout << endl;
+			}
+			continue;
+		}
+		vector<string> dirEntries;
 		DIR* dirp;
 		if(NULL == (dirp = opendir(fileParam.at(i).c_str())))
 		{
@@ -376,7 +464,6 @@ int main(int argc, char** argv)
 		}
 		dirent* tempDirEnt;
 		errno = 0;
-		// Following two lengths include '\0'
 		unsigned int maxLength = 0;
 		unsigned int totalLength = 0;
 		while(NULL != (tempDirEnt = readdir(dirp)))
@@ -386,8 +473,7 @@ int main(int argc, char** argv)
 			{
 				continue;
 			}
-			dirEntries.push_back(tempDirEnt);
-			dirEntriesLong.push_back(tempDirEnt->d_name);
+			dirEntries.push_back(tempDirEnt->d_name);
 
 			unsigned int tempSize = strlen(tempDirEnt->d_name); 
 			if(tempSize > maxLength)
@@ -411,13 +497,23 @@ int main(int argc, char** argv)
 
 		if(RFlag)
 		{
-			printRecursive(dirEntries, NULL, lFlag);
+			string inputPath = fileParam.at(i);
+			if(inputPath.at(inputPath.size() - 1) != '/')
+			{
+				inputPath.append("/");
+			}
+			printRecursive(dirEntries, inputPath, lFlag, aFlag, true);
 		}
 		else
 		{
 			if(lFlag)
 			{
-				printLongForm(dirEntriesLong);
+				string path = fileParam.at(i);
+				if(path.at(path.size() - 1) != '/')
+				{
+					path.append("/");
+				}
+				printLongForm(dirEntries, path);
 			}
 			else
 			{

@@ -1,0 +1,728 @@
+Script started on Sat 02 May 2015 12:34:55 AM PDT
+~
+jwong066@hammer $ cd CS100/Assn/rshell
+~/CS100/Assn/rshell
+jwong066@hammer $ bin/ls # No flags
+bin  LICENSE  ls.script  Makefile  README.md  src  testDir  tests  
+~/CS100/Assn/rshell
+jwong066@hammer $ bin/ls . # No flags , with .
+bin  LICENSE  ls.script  Makefile  README.md  src  testDir  tests  
+~/CS100/Assn/rshell
+jwong066@hammer $ bin/ls ../ # No flags, r[Kprevious directory
+rshell  
+~/CS100/Assn/rshell
+jwong066@hammer $ bin/ls       src # No flags, spaces
+ls.cpp  rshell.cpp  
+~/CS100/Assn/rshell
+jwong066@hammer $ bin/ls      src/ #n[KNo flags, this time with a slash
+ls.cpp  rshell.cpp  
+~/CS100/Assn/rshell
+jwong066@hammer $ bin/ls ~ src[K[K[K#No flags, tilde, tabled output
+a                                                       aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                 b                                                       
+c                                                       CS100                                                   CS61                                                    
+d                                                       e                                                       f                                                       
+hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh  i                                                       jjjjjjj                                                 
+kkkkkkkkkkkk                                            testdir                                                 testmbs.cpp                                             
+
+~/CS100/Assn/rshell
+jwong066@hammer $ bin/ls src testDir/ #No flags, two directories
+src:
+ls.cpp  rshell.cpp  
+
+testDir/:
+testDir1  
+~/CS100/Assn/rshell
+jwong066@hammer $ bin/ls -a #[K            # a flag
+.  ..  bin  .git  LICENSE  ls.script  Makefile  README.md  src  .srr  testDir  tests  
+~/CS100/Assn/rshell
+jwong066@hammer $ bin/ls         -a     . #a flag, with spaces, d[Kworking directory
+.  ..  bin  .git  LICENSE  ls.script  Makefile  README.md  src  .srr  testDir  tests  
+~/CS100/Assn/rshell
+jwong066@hammer $ bin/ls       -a    .. #a flag, with spaces, previous directory
+.  ..  rshell  
+~/CS100/Assn/rshell
+jwong066@hammer $ bin/ls -a      src # a flag, with a directory
+.  ..  ls.cpp  rshell.cpp  
+~/CS100/Assn/rshell
+jwong066@hammer $ bin/ls -a  ~  # a flag with tabled output
+.                                                       ..                                                      a                                                       
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                 b                                                       .bashrc                                                 
+.bash_history                                           .bash_logout                                            c                                                       
+CS100                                                   CS61                                                    d                                                       
+.DCOPserver_well.cs.ucr.edu_localhost:10                .DCOPserver_well.cs.ucr.edu_localhost:11                .DCOPserver_well.cs.ucr.edu_localhost:12                
+.DCOPserver_well.cs.ucr.edu_localhost:13                .DCOPserver_well.cs.ucr.edu_localhost:14                .DCOPserver_well.cs.ucr.edu_localhost:16                
+.DCOPserver_well.cs.ucr.edu_localhost:17                .DCOPserver_well.cs.ucr.edu_localhost:20                .DCOPserver_well.cs.ucr.edu_localhost:21                
+.DCOPserver_well.cs.ucr.edu_localhost:28                .DCOPserver_well.cs.ucr.edu_localhost:35                .DCOPserver_well.cs.ucr.edu_localhost:44                
+.DCOPserver_well.cs.ucr.edu_localhost_10                .DCOPserver_well.cs.ucr.edu_localhost_11                .DCOPserver_well.cs.ucr.edu_localhost_12                
+.DCOPserver_well.cs.ucr.edu_localhost_13                .DCOPserver_well.cs.ucr.edu_localhost_14                .DCOPserver_well.cs.ucr.edu_localhost_16                
+.DCOPserver_well.cs.ucr.edu_localhost_17                .DCOPserver_well.cs.ucr.edu_localhost_20                .DCOPserver_well.cs.ucr.edu_localhost_21                
+.DCOPserver_well.cs.ucr.edu_localhost_28                .DCOPserver_well.cs.ucr.edu_localhost_35                .DCOPserver_well.cs.ucr.edu_localhost_44                
+.DCOPserver_well.cs.ucr.edu_NODISPLAY                   e                                                       f                                                       
+.gitconfig                                              .gitlearn                                               .gnupg                                                  
+hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh  i                                                       .ICEauthority                                           
+jjjjjjj                                                 .kde                                                    kkkkkkkkkkkk                                            
+.lesshst                                                .pki                                                    .profile                                                
+.qt                                                     .ssh                                                    testdir                                                 
+testmbs.cpp                                             .vim                                                    .viminfo                                                
+.vimrc                                                  .Xauthority                                             
+
+~/CS100/Assn/rshell
+jwong066@hammer $ bin/ls -R . [K[K[K      #R flag
+.:
+bin  LICENSE  ls.script  Makefile  README.md  src  testDir  tests  
+
+./bin:
+ls  
+
+./src:
+ls.cpp  rshell.cpp  
+
+./testDir:
+testDir1  
+
+./testDir/testDir1:
+testDir2  testDir21  
+
+./testDir/testDir1/testDir2:
+testDir3  
+
+./testDir/testDir1/testDir2/testDir3:
+testFile  
+
+./testDir/testDir1/testDir21:
+
+
+./tests:
+exec.script  
+
+~/CS100/Assn/rshell
+jwong066@hammer $ bin/ls         -R        .     #R flag
+.:
+bin  LICENSE  ls.script  Makefile  README.md  src  testDir  tests  
+
+./bin:
+ls  
+
+./src:
+ls.cpp  rshell.cpp  
+
+./testDir:
+testDir1  
+
+./testDir/testDir1:
+testDir2  testDir21  
+
+./testDir/testDir1/testDir2:
+testDir3  
+
+./testDir/testDir1/testDir2/testDir3:
+testFile  
+
+./testDir/testDir1/testDir21:
+
+
+./tests:
+exec.script  
+
+~/CS100/Assn/rshell
+jwong066@hammer $ bin/ls       -R       ../     #R flag, previous directory
+..:
+rshell  
+
+../rshell:
+bin  LICENSE  ls.script  Makefile  README.md  src  testDir  tests  
+
+../rshell/bin:
+ls  
+
+../rshell/src:
+ls.cpp  rshell.cpp  
+
+../rshell/testDir:
+testDir1  
+
+../rshell/testDir/testDir1:
+testDir2  testDir21  
+
+../rshell/testDir/testDir1/testDir2:
+testDir3  
+
+../rshell/testDir/testDir1/testDir2/testDir3:
+testFile  
+
+../rshell/testDir/testDir1/testDir21:
+
+
+../rshell/tests:
+exec.script  
+
+~/CS100/Assn/rshell
+jwong066@hammer $ bin/ls          -R          src       #R flag, directory
+src:
+ls.cpp  rshell.cpp  
+
+~/CS100/Assn/rshell
+jwong066@hammer $ bin/ls        -R         testDir        # R flag, directory
+testDir:
+testDir1  
+
+testDir/testDir1:
+testDir2  testDir21  
+
+testDir/testDir1/testDir2:
+testDir3  
+
+testDir/testDir1/testDir2/testDir3:
+testFile  
+
+testDir/testDir1/testDir21:
+
+
+~/CS100/Assn/rshell
+jwong066@hammer $ echo NOW I WILL TEST E[KMORE EXTREME CASES
+NOW I WILL TEST MORE EXTREME CASES
+~/CS100/Assn/rshell
+jwong066@hammer $ bin/ls      nonexistent       # nonexistent file
+Stat error: No such file or directory
+~/CS100/Assn/rshell
+jwong066@hammer $ bin/ls       -a   nonexistent       #i[Knonexistent file
+Stat error: No such file or directory
+~/CS100/Assn/rshell
+jwong066@hammer $ bin/ls    -l     o[Knonexistent     #nonexistent file
+Stat error: No such file or directory
+~/CS100/Assn/rshell
+jwong066@hammer $ bin/ls      -r[KR        o[Knonexistent    #nonexistent file
+Stat error: No such file or directory
+~/CS100/Assn/rshell
+jwong066@hammer $ bin/ls         -Ra    nonexistet[Knt     @[K@[K#nonexistent file, w[Kflag combination
+Stat error: No such file or directory
+~/CS100/Assn/rshell
+jwong066@hammer $ in[K[Kbin[Kn/ls         -a            -x
+Error: Invalid flag
+~/CS100/Assn/rshell
+jwong066@hammer $ bin/ls        -a [Kx       #i[Knonex[K[K[K[K[Kinvalid flag
+Error: Invalid flag
+~/CS100/Assn/rshell
+jwong066@hammer $ bin'[K/ls          -a          testDir        -x      #invalid flag
+Error: Invalid flag
+~/CS100/Assn/rshell
+jwong066@hammer $ bin/ls -a [Kl         [K[K[Ksrc
+total 28
+drwx------ 2 jwong066 csmajs  4096 May 02  0:25 .
+drwx------ 8 jwong066 csmajs  4096 May 02  0:28 ..
+-rw------- 1 jwong066 csmajs 10355 May 02  0:16 ls.cpp
+-rw------- 1 jwong066 csmajs  5998 Apr 20  1:47 rshell.cpp
+~/CS100/Assn/rshell
+jwong066@hammer $ bin/ls -la    src #another comi[Kbination of the same flags
+total 28
+drwx------ 2 jwong066 csmajs  4096 May 02  0:25 .
+drwx------ 8 jwong066 csmajs  4096 May 02  0:28 ..
+-rw------- 1 jwong066 csmajs 10355 May 02  0:16 ls.cpp
+-rw------- 1 jwong066 csmajs  5998 Apr 20  1:47 rshell.cpp
+~/CS100/Assn/rshell
+jwong066@hammer $ bin/ls     -l       -a  src #another combination of the same flags
+total 28
+drwx------ 2 jwong066 csmajs  4096 May 02  0:25 .
+drwx------ 8 jwong066 csmajs  4096 May 02  0:28 ..
+-rw------- 1 jwong066 csmajs 10355 May 02  0:16 ls.cpp
+-rw------- 1 jwong066 csmajs  5998 Apr 20  1:47 rshell.cpp
+~/CS100/Assn/rshell
+jwong066@hammer $ bin/ls           -l   src -a       #another combination of the same flags
+total 28
+drwx------ 2 jwong066 csmajs  4096 May 02  0:25 .
+drwx------ 8 jwong066 csmajs  4096 May 02  0:28 ..
+-rw------- 1 jwong066 csmajs 10355 May 02  0:16 ls.cpp
+-rw------- 1 jwong066 csmajs  5998 Apr 20  1:47 rshell.cpp
+~/CS100/Assn/rshell
+jwong066@hammer $ bin/ls             0[K-;[Kl        R[K-R     s[KtestDir  #l and R o[Kcomi[Kbination
+testDir:
+total 4
+drwx------ 4 jwong066 csmajs 4096 May 01 21:16 testDir1
+
+testDir/testDir1:
+total 8
+drwx------ 3 jwong066 csmajs 4096 May 01 21:01 testDir2
+drwx------ 2 jwong066 csmajs 4096 May 01 21:16 testDir21
+
+testDir/testDir1/testDir2:
+total 4
+drwx------ 2 jwong066 csmajs 4096 May 01 21:29 testDir3
+
+testDir/testDir1/testDir2/testDir3:
+total 0
+-rw------- 1 jwong066 csmajs 0 May 01 21:29 testFile
+
+testDir/testDir1/testDir21:
+total 0
+
+
+~/CS100/Assn/rshell
+jwong066@hammer $ bin/ls       -R         -l     testDir    #same combination
+testDir:
+total 4
+drwx------ 4 jwong066 csmajs 4096 May 01 21:16 testDir1
+
+testDir/testDir1:
+total 8
+drwx------ 3 jwong066 csmajs 4096 May 01 21:01 testDir2
+drwx------ 2 jwong066 csmajs 4096 May 01 21:16 testDir21
+
+testDir/testDir1/testDir2:
+total 4
+drwx------ 2 jwong066 csmajs 4096 May 01 21:29 testDir3
+
+testDir/testDir1/testDir2/testDir3:
+total 0
+-rw------- 1 jwong066 csmajs 0 May 01 21:29 testFile
+
+testDir/testDir1/testDir21:
+total 0
+
+
+~/CS100/Assn/rshell
+jwong066@hammer $ bin/ls        -Rl        [K[K[K[K[K[K[K[K[K[K[K[KtestDir -Rl      #same combination
+testDir:
+total 4
+drwx------ 4 jwong066 csmajs 4096 May 01 21:16 testDir1
+
+testDir/testDir1:
+total 8
+drwx------ 3 jwong066 csmajs 4096 May 01 21:01 testDir2
+drwx------ 2 jwong066 csmajs 4096 May 01 21:16 testDir21
+
+testDir/testDir1/testDir2:
+total 4
+drwx------ 2 jwong066 csmajs 4096 May 01 21:29 testDir3
+
+testDir/testDir1/testDir2/testDir3:
+total 0
+-rw------- 1 jwong066 csmajs 0 May 01 21:29 testFile
+
+testDir/testDir1/testDir21:
+total 0
+
+
+~/CS100/Assn/rshell
+jwong066@hammer $ bin/ls         testDi[K[K[K[K[K[K[K-R      testDir  -l     #c[Ksame combination
+testDir:
+total 4
+drwx------ 4 jwong066 csmajs 4096 May 01 21:16 testDir1
+
+testDir/testDir1:
+total 8
+drwx------ 3 jwong066 csmajs 4096 May 01 21:01 testDir2
+drwx------ 2 jwong066 csmajs 4096 May 01 21:16 testDir21
+
+testDir/testDir1/testDir2:
+total 4
+drwx------ 2 jwong066 csmajs 4096 May 01 21:29 testDir3
+
+testDir/testDir1/testDir2/testDir3:
+total 0
+-rw------- 1 jwong066 csmajs 0 May 01 21:29 testFile
+
+testDir/testDir1/testDir21:
+total 0
+
+
+~/CS100/Assn/rshell
+jwong066@hammer $ bin/ls bin [K[K[K[K-l[Ka   -R      testDir   #same combination
+testDir:
+.  ..  testDir1  
+
+testDir/testDir1:
+.  ..  testDir2  testDir21  
+
+testDir/testDir1/testDir2:
+.  ..  testDir3  
+
+testDir/testDir1/testDir2/testDir3:
+.  ..  testFile  
+
+testDir/testDir1/testDir21:
+.  ..  
+
+~/CS100/Assn/rshell
+jwong066@hammer $ bin/ls  -a     [K[K[K[K[K[KR      -a  testDir  #same combination
+testDir:
+.  ..  testDir1  
+
+testDir/testDir1:
+.  ..  testDir2  testDir21  
+
+testDir/testDir1/testDir2:
+.  ..  testDir3  
+
+testDir/testDir1/testDir2/testDir3:
+.  ..  testFile  
+
+testDir/testDir1/testDir21:
+.  ..  
+
+~/CS100/Assn/rshell
+jwong066@hammer $ bin/ls      -aR    testDir   #woops [K, above 2 were not same as the 3rd above this one
+testDir:
+.  ..  testDir1  
+
+testDir/testDir1:
+.  ..  testDir2  testDir21  
+
+testDir/testDir1/testDir2:
+.  ..  testDir3  
+
+testDir/testDir1/testDir2/testDir3:
+.  ..  testFile  
+
+testDir/testDir1/testDir21:
+.  ..  
+
+~/CS100/Assn/rshell
+jwong066@hammer $ bin/ls        -a     testDir         -R      #same combination
+testDir:
+.  ..  testDir1  
+
+testDir/testDir1:
+.  ..  testDir2  testDir21  
+
+testDir/testDir1/testDir2:
+.  ..  testDir3  
+
+testDir/testDir1/testDir2/testDir3:
+.  ..  testFile  
+
+testDir/testDir1/testDir21:
+.  ..  
+
+~/CS100/Assn/rshell
+jwong066@hammer $ bin/ls     -aRl   testDir     #all 3
+testDir:
+total 12
+drwx------ 3 jwong066 csmajs 4096 May 01 20:57 .
+drwx------ 8 jwong066 csmajs 4096 May 02  0:28 ..
+drwx------ 4 jwong066 csmajs 4096 May 01 21:16 testDir1
+
+testDir/testDir1:
+total 16
+drwx------ 4 jwong066 csmajs 4096 May 01 21:16 .
+drwx------ 3 jwong066 csmajs 4096 May 01 20:57 ..
+drwx------ 3 jwong066 csmajs 4096 May 01 21:01 testDir2
+drwx------ 2 jwong066 csmajs 4096 May 01 21:16 testDir21
+
+testDir/testDir1/testDir2:
+total 12
+drwx------ 3 jwong066 csmajs 4096 May 01 21:01 .
+drwx------ 4 jwong066 csmajs 4096 May 01 21:16 ..
+drwx------ 2 jwong066 csmajs 4096 May 01 21:29 testDir3
+
+testDir/testDir1/testDir2/testDir3:
+total 8
+drwx------ 2 jwong066 csmajs 4096 May 01 21:29 .
+drwx------ 3 jwong066 csmajs 4096 May 01 21:01 ..
+-rw------- 1 jwong066 csmajs    0 May 01 21:29 testFile
+
+testDir/testDir1/testDir21:
+total 8
+drwx------ 2 jwong066 csmajs 4096 May 01 21:16 .
+drwx------ 4 jwong066 csmajs 4096 May 01 21:16 ..
+
+~/CS100/Assn/rshell
+jwong066@hammer $ bin/ls   -Rla[K[K[KalR  testDir        #same combination, all3[K 3
+testDir:
+total 12
+drwx------ 3 jwong066 csmajs 4096 May 01 20:57 .
+drwx------ 8 jwong066 csmajs 4096 May 02  0:28 ..
+drwx------ 4 jwong066 csmajs 4096 May 01 21:16 testDir1
+
+testDir/testDir1:
+total 16
+drwx------ 4 jwong066 csmajs 4096 May 01 21:16 .
+drwx------ 3 jwong066 csmajs 4096 May 01 20:57 ..
+drwx------ 3 jwong066 csmajs 4096 May 01 21:01 testDir2
+drwx------ 2 jwong066 csmajs 4096 May 01 21:16 testDir21
+
+testDir/testDir1/testDir2:
+total 12
+drwx------ 3 jwong066 csmajs 4096 May 01 21:01 .
+drwx------ 4 jwong066 csmajs 4096 May 01 21:16 ..
+drwx------ 2 jwong066 csmajs 4096 May 01 21:29 testDir3
+
+testDir/testDir1/testDir2/testDir3:
+total 8
+drwx------ 2 jwong066 csmajs 4096 May 01 21:29 .
+drwx------ 3 jwong066 csmajs 4096 May 01 21:01 ..
+-rw------- 1 jwong066 csmajs    0 May 01 21:29 testFile
+
+testDir/testDir1/testDir21:
+total 8
+drwx------ 2 jwong066 csmajs 4096 May 01 21:16 .
+drwx------ 4 jwong066 csmajs 4096 May 01 21:16 ..
+
+~/CS100/Assn/rshell
+jwong066@hammer $ bin/ls         - [KRla    testDir   #same combination all 3
+testDir:
+total 12
+drwx------ 3 jwong066 csmajs 4096 May 01 20:57 .
+drwx------ 8 jwong066 csmajs 4096 May 02  0:28 ..
+drwx------ 4 jwong066 csmajs 4096 May 01 21:16 testDir1
+
+testDir/testDir1:
+total 16
+drwx------ 4 jwong066 csmajs 4096 May 01 21:16 .
+drwx------ 3 jwong066 csmajs 4096 May 01 20:57 ..
+drwx------ 3 jwong066 csmajs 4096 May 01 21:01 testDir2
+drwx------ 2 jwong066 csmajs 4096 May 01 21:16 testDir21
+
+testDir/testDir1/testDir2:
+total 12
+drwx------ 3 jwong066 csmajs 4096 May 01 21:01 .
+drwx------ 4 jwong066 csmajs 4096 May 01 21:16 ..
+drwx------ 2 jwong066 csmajs 4096 May 01 21:29 testDir3
+
+testDir/testDir1/testDir2/testDir3:
+total 8
+drwx------ 2 jwong066 csmajs 4096 May 01 21:29 .
+drwx------ 3 jwong066 csmajs 4096 May 01 21:01 ..
+-rw------- 1 jwong066 csmajs    0 May 01 21:29 testFile
+
+testDir/testDir1/testDir21:
+total 8
+drwx------ 2 jwong066 csmajs 4096 May 01 21:16 .
+drwx------ 4 jwong066 csmajs 4096 May 01 21:16 ..
+
+~/CS100/Assn/rshell
+jwong066@hammer $ bin/ls         - R[K[KR    testDir    -l -a #same combagt[K[K[Kination, all 3
+testDir:
+total 12
+drwx------ 3 jwong066 csmajs 4096 May 01 20:57 .
+drwx------ 8 jwong066 csmajs 4096 May 02  0:28 ..
+drwx------ 4 jwong066 csmajs 4096 May 01 21:16 testDir1
+
+testDir/testDir1:
+total 16
+drwx------ 4 jwong066 csmajs 4096 May 01 21:16 .
+drwx------ 3 jwong066 csmajs 4096 May 01 20:57 ..
+drwx------ 3 jwong066 csmajs 4096 May 01 21:01 testDir2
+drwx------ 2 jwong066 csmajs 4096 May 01 21:16 testDir21
+
+testDir/testDir1/testDir2:
+total 12
+drwx------ 3 jwong066 csmajs 4096 May 01 21:01 .
+drwx------ 4 jwong066 csmajs 4096 May 01 21:16 ..
+drwx------ 2 jwong066 csmajs 4096 May 01 21:29 testDir3
+
+testDir/testDir1/testDir2/testDir3:
+total 8
+drwx------ 2 jwong066 csmajs 4096 May 01 21:29 .
+drwx------ 3 jwong066 csmajs 4096 May 01 21:01 ..
+-rw------- 1 jwong066 csmajs    0 May 01 21:29 testFile
+
+testDir/testDir1/testDir21:
+total 8
+drwx------ 2 jwong066 csmajs 4096 May 01 21:16 .
+drwx------ 4 jwong066 csmajs 4096 May 01 21:16 ..
+
+~/CS100/Assn/rshell
+jwong066@hammer $ bin/ls       -R[Kl     testDir     -Ra     #same combination ,[K[K, all 3
+testDir:
+total 12
+drwx------ 3 jwong066 csmajs 4096 May 01 20:57 .
+drwx------ 8 jwong066 csmajs 4096 May 02  0:28 ..
+drwx------ 4 jwong066 csmajs 4096 May 01 21:16 testDir1
+
+testDir/testDir1:
+total 16
+drwx------ 4 jwong066 csmajs 4096 May 01 21:16 .
+drwx------ 3 jwong066 csmajs 4096 May 01 20:57 ..
+drwx------ 3 jwong066 csmajs 4096 May 01 21:01 testDir2
+drwx------ 2 jwong066 csmajs 4096 May 01 21:16 testDir21
+
+testDir/testDir1/testDir2:
+total 12
+drwx------ 3 jwong066 csmajs 4096 May 01 21:01 .
+drwx------ 4 jwong066 csmajs 4096 May 01 21:16 ..
+drwx------ 2 jwong066 csmajs 4096 May 01 21:29 testDir3
+
+testDir/testDir1/testDir2/testDir3:
+total 8
+drwx------ 2 jwong066 csmajs 4096 May 01 21:29 .
+drwx------ 3 jwong066 csmajs 4096 May 01 21:01 ..
+-rw------- 1 jwong066 csmajs    0 May 01 21:29 testFile
+
+testDir/testDir1/testDir21:
+total 8
+drwx------ 2 jwong066 csmajs 4096 May 01 21:16 .
+drwx------ 4 jwong066 csmajs 4096 May 01 21:16 ..
+
+~/CS100/Assn/rshell
+jwong066@hammer $ bin/ls          -l     testDir     -R     src -a   #s[Knew [K[K[K[Ktwo [K[K[K[K2 directories, 3 flags
+src:
+src:
+total 28
+drwx------ 2 jwong066 csmajs  4096 May 02  0:25 .
+drwx------ 8 jwong066 csmajs  4096 May 02  0:28 ..
+-rw------- 1 jwong066 csmajs 10355 May 02  0:16 ls.cpp
+-rw------- 1 jwong066 csmajs  5998 Apr 20  1:47 rshell.cpp
+
+
+testDir:
+testDir:
+total 12
+drwx------ 3 jwong066 csmajs 4096 May 01 20:57 .
+drwx------ 8 jwong066 csmajs 4096 May 02  0:28 ..
+drwx------ 4 jwong066 csmajs 4096 May 01 21:16 testDir1
+
+testDir/testDir1:
+total 16
+drwx------ 4 jwong066 csmajs 4096 May 01 21:16 .
+drwx------ 3 jwong066 csmajs 4096 May 01 20:57 ..
+drwx------ 3 jwong066 csmajs 4096 May 01 21:01 testDir2
+drwx------ 2 jwong066 csmajs 4096 May 01 21:16 testDir21
+
+testDir/testDir1/testDir2:
+total 12
+drwx------ 3 jwong066 csmajs 4096 May 01 21:01 .
+drwx------ 4 jwong066 csmajs 4096 May 01 21:16 ..
+drwx------ 2 jwong066 csmajs 4096 May 01 21:29 testDir3
+
+testDir/testDir1/testDir2/testDir3:
+total 8
+drwx------ 2 jwong066 csmajs 4096 May 01 21:29 .
+drwx------ 3 jwong066 csmajs 4096 May 01 21:01 ..
+-rw------- 1 jwong066 csmajs    0 May 01 21:29 testFile
+
+testDir/testDir1/testDir21:
+total 8
+drwx------ 2 jwong066 csmajs 4096 May 01 21:16 .
+drwx------ 4 jwong066 csmajs 4096 May 01 21:16 ..
+
+~/CS100/Assn/rshell
+jwong066@hammer $ bin/ls     -lRa      testDir  [K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[Ksrc    -lRa      k[KtestDir      #same combination, 3 directi[K[K[K[K[K[K[Kflags, 2 directories
+src:
+src:
+total 28
+drwx------ 2 jwong066 csmajs  4096 May 02  0:25 .
+drwx------ 8 jwong066 csmajs  4096 May 02  0:28 ..
+-rw------- 1 jwong066 csmajs 10355 May 02  0:16 ls.cpp
+-rw------- 1 jwong066 csmajs  5998 Apr 20  1:47 rshell.cpp
+
+
+testDir:
+testDir:
+total 12
+drwx------ 3 jwong066 csmajs 4096 May 01 20:57 .
+drwx------ 8 jwong066 csmajs 4096 May 02  0:28 ..
+drwx------ 4 jwong066 csmajs 4096 May 01 21:16 testDir1
+
+testDir/testDir1:
+total 16
+drwx------ 4 jwong066 csmajs 4096 May 01 21:16 .
+drwx------ 3 jwong066 csmajs 4096 May 01 20:57 ..
+drwx------ 3 jwong066 csmajs 4096 May 01 21:01 testDir2
+drwx------ 2 jwong066 csmajs 4096 May 01 21:16 testDir21
+
+testDir/testDir1/testDir2:
+total 12
+drwx------ 3 jwong066 csmajs 4096 May 01 21:01 .
+drwx------ 4 jwong066 csmajs 4096 May 01 21:16 ..
+drwx------ 2 jwong066 csmajs 4096 May 01 21:29 testDir3
+
+testDir/testDir1/testDir2/testDir3:
+total 8
+drwx------ 2 jwong066 csmajs 4096 May 01 21:29 .
+drwx------ 3 jwong066 csmajs 4096 May 01 21:01 ..
+-rw------- 1 jwong066 csmajs    0 May 01 21:29 testFile
+
+testDir/testDir1/testDir21:
+total 8
+drwx------ 2 jwong066 csmajs 4096 May 01 21:16 .
+drwx------ 4 jwong066 csmajs 4096 May 01 21:16 ..
+
+~/CS100/Assn/rshell
+jwong066@hammer $ echo I FORGOT TO DO [K[K[KTEST LS ABOE[KVE SO ILL DO IT NOW
+I FORGOT TO TEST LS ABOVE SO ILL DO IT NOW
+~/CS100/Assn/rshell
+jwong066@hammer $ I [K MEAN I FORGOT TO TEST THE L FLAG
+bash: I: command not found
+~/CS100/Assn/rshell
+jwong066@hammer $ echo I MEAN I FORGOT TO TEST THE L FLAG
+I MEAN I FORGOT TO TEST THE L FLAG
+~/CS100/Assn/rshell
+jwong066@hammer $ ls[K[Kbin/ls    -l        #l flag
+total 28
+drwx------ 2 jwong066 csmajs 4096 May 02  0:17 bin
+-rw------- 1 jwong066 csmajs 1476 Apr 14  1:10 LICENSE
+-rw------- 1 jwong066 csmajs    0 May 02  0:28 ls.script
+-rw------- 1 jwong066 csmajs  203 Apr 28  1:00 Makefile
+-rw------- 1 jwong066 csmajs 2540 Apr 20  1:47 README.md
+drwx------ 2 jwong066 csmajs 4096 May 02  0:25 src
+drwx------ 3 jwong066 csmajs 4096 May 01 20:57 testDir
+drwx------ 2 jwong066 csmajs 4096 May 02  0:28 tests
+~/CS100/Assn/rshell
+jwong066@hammer $ bin/ls      -l    .     #l flag
+do_ypcall: clnt_call: RPC: Unable to send; errno = Operation not permitted
+total 28
+drwx------ 2 jwong066 csmajs 4096 May 02  0:17 bin
+-rw------- 1 jwong066 csmajs 1476 Apr 14  1:10 LICENSE
+-rw------- 1 jwong066 csmajs    0 May 02  0:28 ls.script
+-rw------- 1 jwong066 csmajs  203 Apr 28  1:00 Makefile
+-rw------- 1 jwong066 csmajs 2540 Apr 20  1:47 README.md
+drwx------ 2 jwong066 csmajs 4096 May 02  0:25 src
+drwx------ 3 jwong066 csmajs 4096 May 01 20:57 testDir
+drwx------ 2 jwong066 csmajs 4096 May 02  0:28 tests
+~/CS100/Assn/rshell
+jwong066@hammer $ bin/ls      -l       ../ #l flag, previous directory
+total 4
+drwx------ 8 jwong066 csmajs 4096 May 02  0:28 rshell
+~/CS100/Assn/rshell
+jwong066@hammer $ bin/ls      src   -l    #l flag, directory
+total 20
+-rw------- 1 jwong066 csmajs 10355 May 02  0:16 ls.cpp
+-rw------- 1 jwong066 csmajs  5998 Apr 20  1:47 rshell.cpp
+~/CS100/Assn/rshell
+jwong066@hammer $ bin/ls     src   -l  testDir   #l flag, 2 directoir[K[Kries
+src:
+total 20
+-rw------- 1 jwong066 csmajs 10355 May 02  0:16 ls.cpp
+-rw------- 1 jwong066 csmajs  5998 Apr 20  1:47 rshell.cpp
+
+testDir:
+total 4
+drwx------ 4 jwong066 csmajs 4096 May 01 21:16 testDir1
+~/CS100/Assn/rshell
+jwong066@hammer $ echo I thi[K[K[K[K THIK [K[KNK I ALSO FORGOT TO TEST THE OTHER TWO FLAGS WITH MULTIPLE DIRECTI[K[KTORIE<[KS< WI[K[K[K[K SO I WILL TEST THEM NOW
+I THINK I ALSO FORGOT TO TEST THE OTHER TWO FLAGS WITH MULTIPLE DIRECTORIES SO I WILL TEST THEM NOW
+~/CS100/Assn/rshell
+jwong066@hammer $ bin/ls       src   -R    testDir     # R flag [K, 2 directories
+src:
+src:
+ls.cpp  rshell.cpp  
+
+
+testDir:
+testDir:
+testDir1  
+
+testDir/testDir1:
+testDir2  testDir21  
+
+testDir/testDir1/testDir2:
+testDir3  
+
+testDir/testDir1/testDir2/testDir3:
+testFile  
+
+testDir/testDir1/testDir21:
+
+
+~/CS100/Assn/rshell
+jwong066@hammer $ bin/ls      src -a      testDi[Kir        #a flag 2 directories
+src:
+.  ..  ls.cpp  rshell.cpp  
+
+testDir:
+.  ..  testDir1  
+~/CS100/Assn/rshell
+jwong066@hammer $ exit
+exit
+
+Script done on Sat 02 May 2015 12:56:28 AM PDT
