@@ -21,28 +21,20 @@ using namespace std;
 
 bool compString(string s1, string s2)
 {
-	char arr1[256]; //= {'a'};
-	char arr2[256]; //= {'a'};
-	char* s1Str = arr1;
-	char* s2Str = arr2;
+	string tempS1 = s1;
+	string tempS2 = s2;
 
+	if(tempS1.at(0) == '.')
+	{
+		tempS1 = tempS1.substr(1);
+	}
 
-	strcpy(s1Str, s1.c_str());
-	strcpy(s2Str,s2.c_str());
-	if(s1Str[0] == '.')
+	if(tempS2.at(0) == '.')
 	{
-		strcpy(s1Str, s1.substr(1).c_str());
+		tempS2 = tempS2.substr(1);
 	}
-	if(s2Str[0] == '.')
-	{
-		strcpy(s2Str, s2.substr(1).c_str());
-	}
-	for(unsigned int i = 0; i < strlen(s1Str); ++i)
-	{
-		s1Str[i] = toupper(s1Str[i]);
-		s2Str[i] = toupper(s2Str[i]);
-	}
-	return strcmp(s1Str, s2Str) < 0;
+
+	return strcasecmp(tempS1.c_str(), tempS2.c_str()) < 0;
 }
 
 // Prints names of files in vector
@@ -70,10 +62,11 @@ void printFileNames(vector<string> &d, unsigned int maxLength, unsigned int tota
 		}
 		unsigned int numRows = ceil(static_cast<double>(d.size()) / numColumns);
 
-		unsigned int counter = 0;
 		for(unsigned int i  = 0; i < numRows; ++i)
 		{
-			for(unsigned int j = 0; j < numColumns; ++j, ++counter)
+
+			unsigned int counter = i;
+			for(unsigned int j = 0; j < numColumns; ++j, counter += numRows)
 			{
 				// Mainly for last entry to exit out of loop
 				if(counter >= d.size())
@@ -257,12 +250,12 @@ void printLongForm(vector<string> &d, string path)
 }
 
 // Prints recursively
-void printRecursive(vector<string> &d, string path, bool longForm, bool aFlag, bool first)
+void printRecursive(vector<string> &d, string path, bool longForm, bool aFlag)
 {
-	if(first)
+	/*if(first)
 	{
 		cout << path.substr(0, path.size() -1) << ":" << endl;
-	}
+	}*/
 	if(longForm)
 	{
 		printLongForm(d, path);
@@ -369,7 +362,7 @@ void printRecursive(vector<string> &d, string path, bool longForm, bool aFlag, b
 			}
 
 			fullPath.append("/");
-			printRecursive(dirEntries, fullPath, longForm, aFlag, false);
+			printRecursive(dirEntries, fullPath, longForm, aFlag);
 		}
 	}
 }
@@ -380,6 +373,7 @@ int main(int argc, char** argv)
 	bool lFlag = false;
 	bool RFlag = false;	
 	vector<string> fileParam;
+	vector<string> files;
 
 	unsigned int winWidth;
 	winsize ws;
@@ -390,7 +384,9 @@ int main(int argc, char** argv)
 		exit(1);
 	}
 	winWidth = ws.ws_col;
-	
+
+	bool printF = false;	
+	bool nonexistent = false;
 	// Loops through arguments looking for flags/files/directories
 	for(int i = 1; i < argc; ++i)
 	{
@@ -423,10 +419,57 @@ int main(int argc, char** argv)
 		else
 		{
 			// Adds directories/files to vector
+			struct stat s;
+			if(-1 == stat(argv[i], &s))
+			{
+				perror("Stat error");
+				nonexistent = true;
+				continue;
+			}
+			if(!(S_ISDIR(s.st_mode)))
+			{
+				/*cout << argv[i]; 
+				if(i != argc - 1)
+				{
+					cout << " ";
+				}*/
+				files.push_back(argv[i]);
+				printF = true;
+				continue;
+			}
 			fileParam.push_back(argv[i]); 
 		}
 	}
-	if(fileParam.size() == 0)
+	/*if(printF)
+	{
+		cout << endl;
+	}*/
+	sort(files.begin(), files.end());
+	
+	if(files.size() > 0 )
+	{
+		if(!lFlag)
+		{
+			for(auto f : files)
+			{
+				cout << f << " ";
+			}
+			cout << endl;
+			if(fileParam.size() > 0)
+			{
+				cout << endl;
+			}
+		}
+		else
+		{
+			printLongForm(files, "");
+			if(fileParam.size() > 0)
+			{
+				cout << endl;
+			}
+		}
+	}
+	if(fileParam.size() == 0 && !(printF || nonexistent))
 	{
 		fileParam.push_back("."); // Current directory, if no others specified
 	}
@@ -435,21 +478,6 @@ int main(int argc, char** argv)
 	
 	for(unsigned int i = 0; i < fileParam.size(); ++i)
 	{
-		struct stat s;
-		if(-1 == stat(fileParam.at(i).c_str(), &s))
-		{
-			perror("Stat error");
-			exit(1);
-		}
-		if(!(S_ISDIR(s.st_mode)))
-		{
-			cout << fileParam.at(i) << endl;
-			if(i != fileParam.size() -1)
-			{
-				cout << endl;
-			}
-			continue;
-		}
 		vector<string> dirEntries;
 		DIR* dirp;
 		if(NULL == (dirp = opendir(fileParam.at(i).c_str())))
@@ -458,7 +486,7 @@ int main(int argc, char** argv)
 			continue; // Continue to next parameter
 		}
 
-		if(fileParam.size() > 1)
+		if(fileParam.size() > 1 || printF || RFlag)
 		{
 			cout << fileParam.at(i) << ":" << endl;
 		}
@@ -502,7 +530,7 @@ int main(int argc, char** argv)
 			{
 				inputPath.append("/");
 			}
-			printRecursive(dirEntries, inputPath, lFlag, aFlag, true);
+			printRecursive(dirEntries, inputPath, lFlag, aFlag);
 		}
 		else
 		{

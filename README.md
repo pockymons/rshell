@@ -49,6 +49,6 @@ $ bin/rshell
 ```
 ### ls
 * The GNU `ls` program will output the year in the `-l` flag, if the last modified date is older than 6 months. My program does not.
-* My program does not list the symbolic links.
-* Files are not printed in the same line.
+* My `ls` does not list the symbolic links.
 * The `-R` flag has spacing inconsistencies, including an extra space at the end of the output as well as if a directory has no files.
+* There are no colors distinguishing each file type.
