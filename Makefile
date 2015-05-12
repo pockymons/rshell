@@ -10,5 +10,11 @@ ls:
 cp:  
 	mkdir -p bin
 	g++ $(CXXFLAGS) src/cp.cpp -o bin/cp
+mv:
+	mkdir -p bin
+	g++ $(CXXFLAGS) src/mv.cpp -o bin/mv
+rm:
+	mkdir -p bin
+	g++ $(CXXFLAGS) src/rm.cpp -o bin/rm
 clean:
 	rm -rf bin
