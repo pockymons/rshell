@@ -112,6 +112,7 @@ int main()
 			
 			// For parsing line of commands; delimiter is whitespace, each token will be a command or an argument
 			vector<string> strArgs;
+
 			char_separator<char> sep(" ");
 			// FOLLOWING LINE WILL BREAK IF USED DIRECTLY IN TOKENIZER
 			string subcommand = commandLine.substr(connectorLocs.at(i) + offset, connectorLocs.at(i+1) - connectorLocs.at(i) - offset);
@@ -122,7 +123,24 @@ int main()
 			for(auto iter = tok.begin(); iter != tok.end(); ++iter)
 			{
 				//cout << "tok: " << *iter << endl; // DEBUGGING
-				strArgs.push_back(*iter);
+				string tokenString = *iter;
+
+				//Token has no spaces
+				//Output redirection
+				while((string::size_type oRedir1 = tokenString.find(">")) != string::nopos || 
+					(string::size_type oRedir2 = tokenString.find(">>")) != string::nopos)
+				{
+					unsigned int offset = 0;
+					if(oRedir1 < oRedir2 && oRedir1 != string::nopos)
+					{
+						offset = 1;
+					}
+					else
+					{
+						offset = 2;
+					}
+				}
+				strArgs.push_back(tokenString);
 			}
 
 			// Copy strArgs to vector of c-strings
