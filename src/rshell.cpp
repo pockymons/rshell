@@ -113,7 +113,7 @@ int main()
 			// For parsing line of commands; delimiter is whitespace, each token will be a command or an argument
 			vector<string> strArgs;
 
-			char_separator<char> sep(" ");
+			char_separator<char> sep(" \t");
 			// FOLLOWING LINE WILL BREAK IF USED DIRECTLY IN TOKENIZER
 			string subcommand = commandLine.substr(connectorLocs.at(i) + offset, connectorLocs.at(i+1) - connectorLocs.at(i) - offset);
 			//typedef tokenizer<char_separator<char>> tokenizer; // Used to use this
@@ -127,11 +127,14 @@ int main()
 
 				//Token has no spaces
 				//Output redirection
-				while((string::size_type oRedir1 = tokenString.find(">")) != string::nopos || 
-					(string::size_type oRedir2 = tokenString.find(">>")) != string::nopos)
+				string::size_type oRedir1 = 0;
+				string::size_type oRedir2 = 0;
+				// find(">") will not be npos if oRedir2 = tokenString.find(">>")
+				while(oRedir1 = tokenString.find(">") != string::npos)
 				{
+					oRedir2 = tokenString.find(">>");
 					unsigned int offset = 0;
-					if(oRedir1 < oRedir2 && oRedir1 != string::nopos)
+					if(oRedir1 < oRedir2)
 					{
 						offset = 1;
 					}
@@ -139,8 +142,26 @@ int main()
 					{
 						offset = 2;
 					}
+						
+					string::size_type nextRedir;
+					// Will include ">>" and "<<<"
+					nextRedir = min(tokenString.find(">", oRedir1 + offset), tokenString.find("<", oRedir1 + offset));
+					if(nextRedir == string::npos)
+					{
+						// For substring purposes
+						nextRedir = tokenString.size();
+					}
+
+					string redirFile = tokenString.substr(oRedir1 + offset, nextRedir - oRedir1 - offset);
+					
+					//TODO: Function to redirect
+					
+					tokenString = tokenString.substr(0, oRedir1) + tokenString.substr(nextRedir, tokenString.size() - nextRedir);
 				}
-				strArgs.push_back(tokenString);
+				if(tokenString.size() > 0)
+				{
+					strArgs.push_back(tokenString);
+				}
 			}
 
 			// Copy strArgs to vector of c-strings
