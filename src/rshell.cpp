@@ -8,6 +8,7 @@
 #include <stdio.h> //Perror()
 #include <errno.h> // Perror()
 #include <algorithm>
+#include <utility>
 
 using namespace std;
 using namespace boost;
@@ -112,6 +113,8 @@ int main()
 			
 			// For parsing line of commands; delimiter is whitespace, each token will be a command or an argument
 			vector<string> strArgs;
+			vector<pair<string, string>> ioFiles; // First string is which io redirect (<, >, >>), second is file
+			// Use this instead of map, since map doesn't allow duplicates for a key
 
 			char_separator<char> sep(" \t");
 			// FOLLOWING LINE WILL BREAK IF USED DIRECTLY IN TOKENIZER
@@ -130,7 +133,7 @@ int main()
 				string::size_type oRedir1 = 0;
 				string::size_type oRedir2 = 0;
 				// find(">") will not be npos if oRedir2 = tokenString.find(">>")
-				while(oRedir1 = tokenString.find(">") != string::npos)
+				while((oRedir1 = tokenString.find(">")) != string::npos)
 				{
 					oRedir2 = tokenString.find(">>");
 					unsigned int offset = 0;
@@ -153,10 +156,60 @@ int main()
 					}
 
 					string redirFile = tokenString.substr(oRedir1 + offset, nextRedir - oRedir1 - offset);
-					
-					//TODO: Function to redirect
+				
+					pair<string, string> tempPair("", redirFile);	
+					if(offset == 1)
+					{
+						tempPair.first = ">";
+					}
+					else
+					{
+						tempPair.first = ">>";
+					}
+					ioFiles.push_back(tempPair);
 					
 					tokenString = tokenString.substr(0, oRedir1) + tokenString.substr(nextRedir, tokenString.size() - nextRedir);
+				}
+				
+				//Input redirection
+				string::size_type iRedir1 = 0;
+				string::size_type iRedir3 = 0;
+				while((iRedir1 = tokenString.find("<")) != string::npos)
+				{
+					iRedir3 = tokenString.find("<<");
+					unsigned int offset = 0;
+					if(iRedir1 < iRedir3)
+					{
+						offset = 1;
+					}
+					else
+					{
+						offset = 3;
+					}
+						
+					string::size_type nextRedir;
+					// Will include ">>" and "<<<"
+					nextRedir = min(tokenString.find("<", oRedir1 + offset), tokenString.find("<", oRedir1 + offset));
+					if(nextRedir == string::npos)
+					{
+						// For substring purposes
+						nextRedir = tokenString.size();
+					}
+
+					string redirFile = tokenString.substr(iRedir1 + offset, nextRedir - iRedir1 - offset);
+				
+					pair<string, string> tempPair("", redirFile);	
+					if(offset == 1)
+					{
+						tempPair.first = ">";
+					}
+					else
+					{
+						tempPair.first = ">>>";
+					}
+					ioFiles.push_back(tempPair);
+					
+					tokenString = tokenString.substr(0, iRedir1) + tokenString.substr(nextRedir, tokenString.size() - nextRedir);
 				}
 				if(tokenString.size() > 0)
 				{
