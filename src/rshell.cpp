@@ -101,22 +101,36 @@ void inputRedir(string file, int replaceFD, int numBrackets)
 	{
 		// In this case, file isn't actually a file; I just didn't rename it; in this case, file is the string to be redirected
 		char buf[BUFSIZ];
-		for(int i = 0; i < BUFSIZ; ++i)
+		for(unsigned int i = 0; i < BUFSIZ; ++i)
 		{
-			buf[i] = file.at(i);
-			file.erase(0, BUFSIZ);
+			if(i < file.size())
+			{
+				buf[i] = file.at(i);
+			}
+			else
+			{
+				break;
+			}	
 		}
+		file.erase(0, BUFSIZ);
 		while(file.size() > 0)
 		{
 			if(-1 == write(replaceFD, buf, BUFSIZ))
 			{
 				perror("Write");
 			}
-			for(int i = 0; i < BUFSIZ; ++i)
+			for(unsigned int i = 0; i < BUFSIZ; ++i)
 			{
-				buf[i] = file.at(i);
-				file.erase(0, BUFSIZ);
+				if(i < file.size())
+				{
+					buf[i] = file.at(i);
+				}
+				else
+				{
+					break;
+				}
 			}
+			file.erase(0, BUFSIZ);
 		}
 	}
 }
@@ -278,7 +292,7 @@ int main()
 						
 					string::size_type nextRedir;
 					// Will include ">>" and "<<<"
-					nextRedir = min(tokenString.find("<", oRedir1 + offset), tokenString.find("<", oRedir1 + offset));
+					nextRedir = min(tokenString.find("<", iRedir1 + offset), tokenString.find("<", iRedir1 + offset));
 					if(nextRedir == string::npos)
 					{
 						// For substring purposes
