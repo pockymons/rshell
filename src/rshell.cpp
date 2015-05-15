@@ -101,24 +101,9 @@ void inputRedir(string file, int replaceFD, int numBrackets)
 	{
 		// In this case, file isn't actually a file; I just didn't rename it; in this case, file is the string to be redirected
 		char buf[BUFSIZ];
-		for(unsigned int i = 0; i < BUFSIZ; ++i)
-		{
-			if(i < file.size())
-			{
-				buf[i] = file.at(i);
-			}
-			else
-			{
-				break;
-			}	
-		}
-		file.erase(0, BUFSIZ);
 		while(file.size() > 0)
 		{
-			if(-1 == write(replaceFD, buf, BUFSIZ))
-			{
-				perror("Write");
-			}
+
 			for(unsigned int i = 0; i < BUFSIZ; ++i)
 			{
 				if(i < file.size())
@@ -131,6 +116,10 @@ void inputRedir(string file, int replaceFD, int numBrackets)
 				}
 			}
 			file.erase(0, BUFSIZ);
+			if(-1 == write(replaceFD, buf, sizeof(buf)))
+			{
+				perror("Write");
+			}
 		}
 	}
 }
