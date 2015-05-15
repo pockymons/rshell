@@ -237,7 +237,7 @@ int main()
 					{
 						offset = 2;
 					}
-						
+
 					string::size_type nextRedir;
 					// Will include ">>" and "<<<"
 					nextRedir = min(tokenString.find(">", oRedir1 + offset), tokenString.find("<", oRedir1 + offset));
