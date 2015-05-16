@@ -214,11 +214,43 @@ int main()
 			//typedef tokenizer<char_separator<char>> tokenizer; // Used to use this
 			//cout << "sub: " << subcommand << endl; // DEBUGGING
 			tokenizer<char_separator<char>> tok(subcommand, sep);
+
+			// For redirection cases with spaces
+			string addBegin = "";
 			// First token is the command, other tokens are the arguments
 			for(auto iter = tok.begin(); iter != tok.end(); ++iter)
 			{
 				//cout << "tok: " << *iter << endl; // DEBUGGING
 				string tokenString = *iter;
+
+				if(addBegin != "")
+				{
+					tokenString = addBegin + tokenString;
+					addBegin = "";
+				}
+				
+				// For redirection cases with spaces; eg. >> file
+				int takeAwayLast = 0;
+				if(tokenString.size() > 0 && tokenString.at(tokenString.size() - 1) == '>')
+				{
+					++takeAwayLast;
+					if(tokenString.size() > 1 && tokenString.at(tokenString.size() - 2) == '>')
+					{
+						++takeAwayLast;
+					}
+				}
+				if(tokenString.size() > 0 && tokenString.at(tokenString.size() - 1) == '<')
+				{
+					++takeAwayLast;
+					if(tokenString.size() > 1 && tokenString.at(tokenString.size() - 2) == '<' && tokenString.at(tokenString.size() - 3) == '<')
+					{
+						// <<<
+						++takeAwayLast;
+						++takeAwayLast;
+					}
+				}
+				addBegin = tokenString.substr(tokenString.size() - takeAwayLast, takeAwayLast);
+				tokenString = tokenString.substr(0, tokenString.size() - takeAwayLast);
 
 				//Token has no spaces
 				//Output redirection
