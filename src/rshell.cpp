@@ -140,7 +140,7 @@ void inputRedir(string file, int replaceFD, int numBrackets)
 }
 
 // Each vector within the first vector has the commands between pipes; assume vector is size of 2 or more; checks this condition in main
-void myPipe(vector<vector<string>>& pipeV)
+void myPipe(vector<vector<char*>>& pipeV)
 {
 	// First command of pipe; leftmost
 	int fd1[2];
@@ -164,7 +164,7 @@ void myPipe(vector<vector<string>>& pipeV)
 				perror("Close stdout");
 				_exit(1);
 			}
-			if(-1 == dup2(fd[1], 1))
+			if(-1 == dup2(fd1[1], 1))
 			{
 				perror("Redirect stdout");
 				_exit(1);
@@ -263,141 +263,152 @@ int main()
 			//cout << offset << endl; // DEBUGGING
 			
 			// For parsing line of commands; delimiter is whitespace, each token will be a command or an argument
-			vector<string> strArgs;
-			vector<pair<string, string>> ioFiles; // First string is which io redirect (<, >, >>), second is file
+			vector<vector<string>> strArgs;
+			vector<vector<pair<string, string>>> ioFiles; // First string is which io redirect (<, >, >>), second is file
 			// Use this instead of map, since map doesn't allow duplicates for a key
 
-			char_separator<char> sep(" \t");
 			// FOLLOWING LINE WILL BREAK IF USED DIRECTLY IN TOKENIZER
 			string subcommand = commandLine.substr(connectorLocs.at(i) + offset, connectorLocs.at(i+1) - connectorLocs.at(i) - offset);
 			//typedef tokenizer<char_separator<char>> tokenizer; // Used to use this
 			//cout << "sub: " << subcommand << endl; // DEBUGGING
-			tokenizer<char_separator<char>> tok(subcommand, sep);
-
-			// For redirection cases with spaces
-			string addBegin = "";
-			// First token is the command, other tokens are the arguments
-			for(auto iter = tok.begin(); iter != tok.end(); ++iter)
+			char_separator<char> pipeSep("|");
+			tokenizer<char_separator<char>> tokPipe(subcommand, pipeSep);
+			int pipeSectionCounter = 0;
+			for(auto iterPipe = tokPipe.begin(); iterPipe != tokPipe.end(); ++iterPipe)
 			{
-				//cout << "tok: " << *iter << endl; // DEBUGGING
-				string tokenString = *iter;
+				strArgs.push_back(vector<string>());
+				ioFiles.push_back(vector<pair<string, string>>());
 
-				if(addBegin != "")
-				{
-					tokenString = addBegin + tokenString;
-					addBegin = "";
-				}
-				
-				// For redirection cases with spaces; eg. >> file
-				int takeAwayLast = 0;
-				if(tokenString.size() > 0 && tokenString.at(tokenString.size() - 1) == '>')
-				{
-					++takeAwayLast;
-					if(tokenString.size() > 1 && tokenString.at(tokenString.size() - 2) == '>')
-					{
-						++takeAwayLast;
-					}
-				}
-				if(tokenString.size() > 0 && tokenString.at(tokenString.size() - 1) == '<')
-				{
-					++takeAwayLast;
-					if(tokenString.size() > 1 && tokenString.at(tokenString.size() - 2) == '<' && tokenString.at(tokenString.size() - 3) == '<')
-					{
-						// <<<
-						++takeAwayLast;
-						++takeAwayLast;
-					}
-				}
-				addBegin = tokenString.substr(tokenString.size() - takeAwayLast, takeAwayLast);
-				tokenString = tokenString.substr(0, tokenString.size() - takeAwayLast);
+				string subSubcommand = *iterPipe;
+				char_separator<char> sep(" \t");
+				tokenizer<char_separator<char>> tok(subSubcommand, sep);
 
-				//Token has no spaces
-				//Output redirection
-				string::size_type oRedir1 = 0;
-				string::size_type oRedir2 = 0;
-				// find(">") will not be npos if oRedir2 = tokenString.find(">>")
-				while((oRedir1 = tokenString.find(">")) != string::npos)
+				// For redirection cases with spaces
+				string addBegin = "";
+				// First token is the command, other tokens are the arguments
+				for(auto iter = tok.begin(); iter != tok.end(); ++iter)
 				{
-					oRedir2 = tokenString.find(">>");
-					unsigned int offset = 0;
-					if(oRedir1 < oRedir2)
-					{
-						offset = 1;
-					}
-					else
-					{
-						offset = 2;
-					}
+					//cout << "tok: " << *iter << endl; // DEBUGGING
+					string tokenString = *iter;
 
-					string::size_type nextRedir;
-					// Will include ">>" and "<<<"
-					nextRedir = min(tokenString.find(">", oRedir1 + offset), tokenString.find("<", oRedir1 + offset));
-					if(nextRedir == string::npos)
+					if(addBegin != "")
 					{
-						// For substring purposes
-						nextRedir = tokenString.size();
+						tokenString = addBegin + tokenString;
+						addBegin = "";
 					}
-
-					string redirFile = tokenString.substr(oRedir1 + offset, nextRedir - oRedir1 - offset);
-				
-					pair<string, string> tempPair("", redirFile);	
-					if(offset == 1)
-					{
-						tempPair.first = ">";
-					}
-					else
-					{
-						tempPair.first = ">>";
-					}
-					ioFiles.push_back(tempPair);
 					
-					tokenString = tokenString.substr(0, oRedir1) + tokenString.substr(nextRedir, tokenString.size() - nextRedir);
-				}
-				
-				//Input redirection
-				string::size_type iRedir1 = 0;
-				string::size_type iRedir3 = 0;
-				while((iRedir1 = tokenString.find("<")) != string::npos)
-				{
-					iRedir3 = tokenString.find("<<<");
-					unsigned int offset = 0;
-					if(iRedir1 < iRedir3)
+					// For redirection cases with spaces; eg. >> file
+					int takeAwayLast = 0;
+					if(tokenString.size() > 0 && tokenString.at(tokenString.size() - 1) == '>')
 					{
-						offset = 1;
+						++takeAwayLast;
+						if(tokenString.size() > 1 && tokenString.at(tokenString.size() - 2) == '>')
+						{
+							++takeAwayLast;
+						}
 					}
-					else
+					if(tokenString.size() > 0 && tokenString.at(tokenString.size() - 1) == '<')
 					{
-						offset = 3;
+						++takeAwayLast;
+						if(tokenString.size() > 1 && tokenString.at(tokenString.size() - 2) == '<' && tokenString.at(tokenString.size() - 3) == '<')
+						{
+							// <<<
+							++takeAwayLast;
+							++takeAwayLast;
+						}
 					}
+					addBegin = tokenString.substr(tokenString.size() - takeAwayLast, takeAwayLast);
+					tokenString = tokenString.substr(0, tokenString.size() - takeAwayLast);
+
+					//Token has no spaces
+					//Output redirection
+					string::size_type oRedir1 = 0;
+					string::size_type oRedir2 = 0;
+					// find(">") will not be npos if oRedir2 = tokenString.find(">>")
+					while((oRedir1 = tokenString.find(">")) != string::npos)
+					{
+						oRedir2 = tokenString.find(">>");
+						unsigned int offset = 0;
+						if(oRedir1 < oRedir2)
+						{
+							offset = 1;
+						}
+						else
+						{
+							offset = 2;
+						}
+
+						string::size_type nextRedir;
+						// Will include ">>" and "<<<"
+						nextRedir = min(tokenString.find(">", oRedir1 + offset), tokenString.find("<", oRedir1 + offset));
+						if(nextRedir == string::npos)
+						{
+							// For substring purposes
+							nextRedir = tokenString.size();
+						}
+
+						string redirFile = tokenString.substr(oRedir1 + offset, nextRedir - oRedir1 - offset);
+					
+						pair<string, string> tempPair("", redirFile);	
+						if(offset == 1)
+						{
+							tempPair.first = ">";
+						}
+						else
+						{
+							tempPair.first = ">>";
+						}
+						ioFiles.at(pipeSectionCounter).push_back(tempPair);
 						
-					string::size_type nextRedir;
-					// Will include ">>" and "<<<"
-					nextRedir = min(tokenString.find("<", iRedir1 + offset), tokenString.find("<", iRedir1 + offset));
-					if(nextRedir == string::npos)
-					{
-						// For substring purposes
-						nextRedir = tokenString.size();
+						tokenString = tokenString.substr(0, oRedir1) + tokenString.substr(nextRedir, tokenString.size() - nextRedir);
 					}
-
-					string redirFile = tokenString.substr(iRedir1 + offset, nextRedir - iRedir1 - offset);
-				
-					pair<string, string> tempPair("", redirFile);	
-					if(offset == 1)
-					{
-						tempPair.first = "<";
-					}
-					else
-					{
-						tempPair.first = "<<<";
-					}
-					ioFiles.push_back(tempPair);
 					
-					tokenString = tokenString.substr(0, iRedir1) + tokenString.substr(nextRedir, tokenString.size() - nextRedir);
+					//Input redirection
+					string::size_type iRedir1 = 0;
+					string::size_type iRedir3 = 0;
+					while((iRedir1 = tokenString.find("<")) != string::npos)
+					{
+						iRedir3 = tokenString.find("<<<");
+						unsigned int offset = 0;
+						if(iRedir1 < iRedir3)
+						{
+							offset = 1;
+						}
+						else
+						{
+							offset = 3;
+						}
+							
+						string::size_type nextRedir;
+						// Will include ">>" and "<<<"
+						nextRedir = min(tokenString.find("<", iRedir1 + offset), tokenString.find("<", iRedir1 + offset));
+						if(nextRedir == string::npos)
+						{
+							// For substring purposes
+							nextRedir = tokenString.size();
+						}
+
+						string redirFile = tokenString.substr(iRedir1 + offset, nextRedir - iRedir1 - offset);
+					
+						pair<string, string> tempPair("", redirFile);	
+						if(offset == 1)
+						{
+							tempPair.first = "<";
+						}
+						else
+						{
+							tempPair.first = "<<<";
+						}
+						ioFiles.at(pipeSectionCounter).push_back(tempPair);
+						
+						tokenString = tokenString.substr(0, iRedir1) + tokenString.substr(nextRedir, tokenString.size() - nextRedir);
+					}
+					if(tokenString.size() > 0)
+					{
+						strArgs.at(pipeSectionCounter).push_back(tokenString);
+					}
 				}
-				if(tokenString.size() > 0)
-				{
-					strArgs.push_back(tokenString);
-				}
+				++pipeSectionCounter;
 			}
 
 			// Copy strArgs to vector of c-strings
