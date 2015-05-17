@@ -11,12 +11,14 @@
 #include <algorithm>
 #include <utility>
 #include <fcntl.h>
+#include <cstdio>
 
 using namespace std;
 using namespace boost;
 
 // Chose to write function comparing c-strings rather than copy to string then compare
 // Used for checking exit command
+// Was done before realizing I could strcmp
 bool cStringEqual(char* c1, char* c2)
 {
 	int i;
@@ -58,6 +60,12 @@ void outputRedir(string file, int replaceFD, int numBrackets)
 		}
 	}
 	
+	// Man page recommends to close before dup2-ing
+	if(-1 == close(replaceFD))
+	{
+		perror("Close replace fd");
+		_exit(1);
+	}
 	if(-1 == dup2(fdOpen, replaceFD))
 	{
 		perror("Open");
@@ -83,6 +91,12 @@ void inputRedir(string file, int replaceFD, int numBrackets)
 		if(-1 == (fdInput = open(file.c_str(), O_RDONLY)))
 		{
 			perror("Open");
+			_exit(1);
+		}
+		// Man page recommends closing first
+		if(-1 == close(replaceFD))
+		{
+			perror("Close replace fd");
 			_exit(1);
 		}
 		if(-1 == dup2(fdInput, replaceFD))
@@ -119,7 +133,52 @@ void inputRedir(string file, int replaceFD, int numBrackets)
 			if(-1 == write(replaceFD, buf, sizeof(buf)))
 			{
 				perror("Write");
+				_exit(1);
 			}
+		}
+	}
+}
+
+// Each vector within the first vector has the commands between pipes; assume vector is size of 2 or more; checks this condition in main
+void myPipe(vector<vector<string>>& pipeV)
+{
+	// First command of pipe; leftmost
+	int fd1[2];
+	if(-1 == pipe(fd1))
+	{
+		perror("Pipe");
+		exit(1);
+	}
+	int pid = fork();
+	if(-1 == pid)
+	{
+		perror("Fork");
+		exit(1);
+	}
+	else
+	{
+		if(pid == 0)
+		{
+			if(-1 == close(1))
+			{
+				perror("Close stdout");
+				_exit(1);
+			}
+			if(-1 == dup2(fd[1], 1))
+			{
+				perror("Redirect stdout");
+				_exit(1);
+			}
+			execvp(pipeV.at(0).at(0), &((pipeV.at(0))[0]));
+			// Following don't run if execvp succeeds
+			perror("Command execution error");
+			_exit(1);
+		}
+		else
+		{
+			// Do nothing 
+			// I like this format
+			// Only case where the process will continue in the function
 		}
 	}
 }
@@ -408,7 +467,7 @@ int main()
 				}
 				else // Parent process
 				{
-					int status; // Status isn't used but might use in future?
+					int status; 
 					int waitVar = wait(&status);
 					if(waitVar == -1) // If child process has error
 					{
