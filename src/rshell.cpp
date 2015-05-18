@@ -13,9 +13,24 @@
 #include <fcntl.h>
 #include <cstdio>
 #include <cstring>
+#include <cmath>
 
 using namespace std;
 using namespace boost;
+
+// Could have used tuple; However, originally, pair was used, so making a triple struct was faster
+template<typename T1, typename T2, typename T3>
+struct triple
+{
+	public:
+	T1 first;
+	T2 second;
+	T3 third;
+
+	triple(T1 f, T2 s, T3 t) : first(f), second(s), third(t)
+	{
+	}
+};
 
 // file is the file to be outputted to
 // replaceFD is the file directory to copy to
@@ -120,25 +135,25 @@ void inputRedir(string file, int replaceFD, int numBrackets)
 	}
 }
 
-void ioAndExec(vector<vector<char*>>& args, vector<vector<pair<string, string>>>& ioFiles, int argIndex)
+void ioAndExec(vector<vector<char*>>& args, vector<vector<triple<string, string, int>>>& ioFiles, int argIndex)
 {
 	for(auto iter = ioFiles.at(argIndex).begin(); iter != ioFiles.at(argIndex).end(); ++iter)
 	{
 		if(iter->first == ">")
 		{
-			outputRedir(iter->second, 1, 1);
+			outputRedir(iter->second, iter->third, 1);
 		}
 		else if(iter->first == ">>")
 		{
-			outputRedir(iter->second, 1, 2);
+			outputRedir(iter->second, iter->third, 2);
 		}
 		else if(iter->first == "<")
 		{
-			inputRedir(iter->second, 0, 1);
+			inputRedir(iter->second, iter->third, 1);
 		}
 		else if(iter->first == "<<<")
 		{
-			inputRedir(iter->second, 0, 3);
+			inputRedir(iter->second, iter->third, 3);
 		}
 		else
 		{
@@ -154,7 +169,7 @@ void ioAndExec(vector<vector<char*>>& args, vector<vector<pair<string, string>>>
 }
 
 // Each vector within the first vector has the commands between pipes; assume vector is size of 2 or more; checks this condition in main
-void myPipe(vector<vector<char*>>& args, vector<vector<pair<string, string>>>& ioFiles)
+void myPipe(vector<vector<char*>>& args, vector<vector<triple<string, string, int>>>& ioFiles)
 {
 	// First command of pipe; leftmost
 	int fd1[2];
@@ -606,7 +621,7 @@ int main()
 			
 			// For parsing line of commands; delimiter is whitespace, each token will be a command or an argument
 			vector<vector<string>> strArgs;
-			vector<vector<pair<string, string>>> ioFiles; // First string is which io redirect (<, >, >>), second is file
+			vector<vector<triple<string, string, int>>> ioFiles; // First string is which io redirect (<, >, >>), second is file
 			// Use this instead of map, since map doesn't allow duplicates for a key
 
 			// FOLLOWING LINE WILL BREAK IF USED DIRECTLY IN TOKENIZER
@@ -619,7 +634,7 @@ int main()
 			for(auto iterPipe = tokPipe.begin(); iterPipe != tokPipe.end(); ++iterPipe)
 			{
 				strArgs.push_back(vector<string>());
-				ioFiles.push_back(vector<pair<string, string>>());
+				ioFiles.push_back(vector<triple<string, string, int>>());
 
 				string subSubcommand = *iterPipe;
 				char_separator<char> sep(" \t");
@@ -664,6 +679,35 @@ int main()
 
 					//Token has no spaces
 					//Output redirection
+					
+					int oFrom = 1; // 1 for stdout
+					bool oFromChanged = false;
+					int firstOut = tokenString.find(">");
+					for(int o = 0; o < firstOut; ++o)
+					{
+						int fdnum = 0;
+						// if is digit
+						if(tokenString.at(o) > 47 && tokenString.at(o) < 58)
+						{
+							int tempNum = tokenString.at(o);
+							tempNum -= 48;
+							fdnum += pow(10, o) * tempNum;
+						}
+						else
+						{
+							break;
+						}
+						if(o == firstOut - 1)
+						{
+							oFromChanged = true;
+							oFrom = fdnum;
+						}
+					}
+					if(oFromChanged)
+					{
+						tokenString.erase(0, firstOut);
+					}
+
 					string::size_type oRedir1 = 0;
 					string::size_type oRedir2 = 0;
 					// find(">") will not be npos if oRedir2 = tokenString.find(">>")
@@ -691,16 +735,16 @@ int main()
 
 						string redirFile = tokenString.substr(oRedir1 + offset, nextRedir - oRedir1 - offset);
 					
-						pair<string, string> tempPair("", redirFile);	
+						triple<string, string, int> tempTrip("", redirFile, oFrom);	
 						if(offset == 1)
 						{
-							tempPair.first = ">";
+							tempTrip.first = ">";
 						}
 						else
 						{
-							tempPair.first = ">>";
+							tempTrip.first = ">>";
 						}
-						ioFiles.at(pipeSectionCounter).push_back(tempPair);
+						ioFiles.at(pipeSectionCounter).push_back(tempTrip);
 						
 						tokenString = tokenString.substr(0, oRedir1) + tokenString.substr(nextRedir, tokenString.size() - nextRedir);
 					}
@@ -732,16 +776,16 @@ int main()
 
 						string redirFile = tokenString.substr(iRedir1 + offset, nextRedir - iRedir1 - offset);
 					
-						pair<string, string> tempPair("", redirFile);	
+						triple<string, string, int > tempTrip("", redirFile, 0);	
 						if(offset == 1)
 						{
-							tempPair.first = "<";
+							tempTrip.first = "<";
 						}
 						else
 						{
-							tempPair.first = "<<<";
+							tempTrip.first = "<<<";
 						}
-						ioFiles.at(pipeSectionCounter).push_back(tempPair);
+						ioFiles.at(pipeSectionCounter).push_back(tempTrip);
 						
 						tokenString = tokenString.substr(0, iRedir1) + tokenString.substr(nextRedir, tokenString.size() - nextRedir);
 					}
@@ -794,7 +838,7 @@ int main()
 				{
 					if(pid == 0) // Child process
 					{
-						// Reminder: vector<pair<string, string>> ioFiles; First string is which io redirect (<, >, >>), second is file
+						// Reminder: vector<triple<string, string>> ioFiles; First string is which io redirect (<, >, >>), second is file
 						ioAndExec(args, ioFiles, 0);
 					}
 					else // Parent process
