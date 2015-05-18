@@ -12,29 +12,10 @@
 #include <utility>
 #include <fcntl.h>
 #include <cstdio>
+#include <cstring>
 
 using namespace std;
 using namespace boost;
-
-// Chose to write function comparing c-strings rather than copy to string then compare
-// Used for checking exit command
-// Was done before realizing I could strcmp
-bool cStringEqual(char* c1, char* c2)
-{
-	int i;
-	for(i = 0; c1[i] != '\0' && c2[i] != '\0'; ++i)
-	{
-		if(c1[i] != c2[i])
-		{
-			return false;
-		}
-	}
-	if(c1[i] != '\0' || c2[i] != '\0')
-	{
-		return false;
-	}
-	return true;
-}
 
 // file is the file to be outputted to
 // replaceFD is the file directory to copy to
@@ -181,6 +162,39 @@ void myPipe(vector<vector<char*>>& pipeV)
 			// Only case where the process will continue in the function
 		}
 	}
+}
+
+void ioAndExec(vector<vector<char*>>& args, vector<vector<pair<string, string>>>& ioFiles, int argIndex)
+{
+	for(auto iter = ioFiles.at(0).begin(); iter != ioFiles.at(0).end(); ++iter)
+	{
+		if(iter->first == ">")
+		{
+			outputRedir(iter->second, 1, 1);
+		}
+		else if(iter->first == ">>")
+		{
+			outputRedir(iter->second, 1, 2);
+		}
+		else if(iter->first == "<")
+		{
+			inputRedir(iter->second, 0, 1);
+		}
+		else if(iter->first == "<<<")
+		{
+			inputRedir(iter->second, 0, 3);
+		}
+		else
+		{
+			// Shouldn't ever happen but just in case
+			cerr << "IO redirection error" << endl;
+			_exit(1);
+		}
+	}
+	execvp(args.at(argIndex).at(0), &(args.at(argIndex).at(0)));
+	// Following don't run if execvp succeeds
+	perror("Command execution error");
+	_exit(1);
 }
 
 int main()
@@ -413,103 +427,87 @@ int main()
 
 			// Copy strArgs to vector of c-strings
 			// NEED TO DO IT THIS WAY OR THERE'S ISSUES WITH POINTERS
-			vector<char*> args;
-			for(auto str : strArgs)
+			vector<vector<char*>> args;
+			for(unsigned int j = 0; j < strArgs.size(); ++j)
 			{
-				args.push_back(const_cast<char*> (str.c_str()));
-			}
-			args.push_back(NULL); // NULL terminating at the end of vector/array
+				args.push_back(vector<char*>());
+				for(auto str : strArgs.at(j))
+				{
+					args.at(j).push_back(const_cast<char*> (str.c_str()));
+				}
+				args.at(j).push_back(NULL); // NULL terminating at the end of vector/array
 			
-			//Blank command or consecutive connectors
-			if(args.size() == 1 && ioFiles.size() == 0)
-			{
-				continue;
+			
+				//Blank command or consecutive connectors
+				if(args.at(j).size() == 1 && ioFiles.at(j).size() == 0)
+				{
+					cerr << "Syntax error" << endl;
+					exit(1);	
+				}
+
+				if(args.at(j).size() > 1 && strcmp(args.at(j).at(0), "exit") == 0) // if command is exit, exit shell
+				{
+					exit(0);
+				}
 			}
 			
-			char* exitCString = const_cast<char*> ("exit"); 
-				
-			//cout << cStringEqual(args.at(0), exitCString) << endl; // DEBUGGING
-			if(args.size() > 1 && cStringEqual(args.at(0), exitCString)) // if command is exit, exit shell
+			// Doesn't matter if it is args or ioFiles; both should be the same size
+			// If args size is 1, there are no pipes
+			if(args.size() == 1)
 			{
-				exit(0);
-			}
-			
-			// Executes commands/takes care of errors
-			int pid = fork();
-			if(pid == -1) // If fork fails
-			{
-				perror("Fork error");
-				exit(1);
+				// Executes commands/takes care of errors
+				int pid = fork();
+				if(pid == -1) // If fork fails
+				{
+					perror("Fork error");
+					exit(1);
+				}
+				else
+				{
+					if(pid == 0) // Child process
+					{
+						// Reminder: vector<pair<string, string>> ioFiles; First string is which io redirect (<, >, >>), second is file
+						ioAndExec(args, ioFiles, 0);
+					}
+					else // Parent process
+					{
+						int status; 
+						int waitVar = wait(&status);
+						if(waitVar == -1) // If child process has error
+						{
+							perror("Child process error");
+							// exits if next connector is && or one-past-end element
+							// continues if next connector is ; or ||
+							
+						}
+						else
+						{
+							int exitStatus = WEXITSTATUS(status); // Checks whether returns 0/1 when exiting
+							if(exitStatus == 1) // If unsuccessful command
+							{
+								if(connectorLocs.at(i+1) < commandLine.size() && 
+									commandLine.at(connectorLocs.at(i+1)) == '&')
+								{
+									//cout << commandLine.at(connectorLocs.at(i+1)) << endl; // DEBUGGING
+									break;
+								}
+							}
+							else
+							{
+								if(connectorLocs.at(i+1) < commandLine.size() && 
+									commandLine.at(connectorLocs.at(i+1)) == '|')
+								{
+									//cout << commandLine.at(connectorLocs.at(i+1)) << endl; // DEBUGGING
+									break;
+								}
+							}
+						}
+					}
+				}
 			}
 			else
 			{
-				if(pid == 0) // Child process
-				{
-					// Reminder: vector<pair<string, string>> ioFiles; First string is which io redirect (<, >, >>), second is file
-					for(auto iter = ioFiles.begin(); iter != ioFiles.end(); ++iter)
-					{
-						if(iter->first == ">")
-						{
-							outputRedir(iter->second, 1, 1);
-						}
-						else if(iter->first == ">>")
-						{
-							outputRedir(iter->second, 1, 2);
-						}
-						else if(iter->first == "<")
-						{
-							inputRedir(iter->second, 0, 1);
-						}
-						else if(iter->first == "<<<")
-						{
-							inputRedir(iter->second, 0, 3);
-						}
-						else
-						{
-							// Shouldn't ever happen but just in case
-							cerr << "IO redirection error" << endl;
-							_exit(1);
-						}
-					}
-					execvp(args.at(0), &(args[0]));
-					// Following don't run if execvp succeeds
-					perror("Command execution error");
-					_exit(1);
-				}
-				else // Parent process
-				{
-					int status; 
-					int waitVar = wait(&status);
-					if(waitVar == -1) // If child process has error
-					{
-						perror("Child process error");
-						// exits if next connector is && or one-past-end element
-						// continues if next connector is ; or ||
-						
-					}
-					else
-					{
-						int exitStatus = WEXITSTATUS(status); // Checks whether returns 0/1 when exiting
-						if(exitStatus == 1) // If unsuccessful command
-						{
-							if(connectorLocs.at(i+1) < commandLine.size() && 
-								commandLine.at(connectorLocs.at(i+1)) == '&')
-							{
-								//cout << commandLine.at(connectorLocs.at(i+1)) << endl; // DEBUGGING
-								break;
-							}
-						}
-						else
-						{
-							if(connectorLocs.at(i+1) < commandLine.size() && 
-								commandLine.at(connectorLocs.at(i+1)) == '|')
-							{
-								//cout << commandLine.at(connectorLocs.at(i+1)) << endl; // DEBUGGING
-								break;
-							}
-						}
-					}
-				}
+				// myPipe
 			}
 		}
 	}
