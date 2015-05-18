@@ -147,6 +147,11 @@ void printLongForm(vector<string> &d, string path)
 		}
 
 		struct group* grp = getgrgid(s.st_gid);
+		if(grp == NULL)
+		{
+			perror("Group ID");
+			exit(1);
+		}
 		unsigned int tempGWidth = strlen(grp->gr_name);
 		if(gWidth < tempGWidth)
 		{
@@ -216,10 +221,22 @@ void printLongForm(vector<string> &d, string path)
 		cout << ((s.st_mode & S_IXOTH) ? 'x' : '-');
 
 		cout << " " << left;
+		struct passwd* PassID = getpwuid(s.st_uid);
+		if(NULL == PassID)
+		{
+			perror("Pass ID");
+			exit(1);
+		}
+		struct group* GrID = getgrgid(s.st_gid);
+		if(NULL == GrID)
+		{
+			perror("Pass ID");
+			exit(1);
+		}
 
 		cout << setw(hardLinkWidth + 1) << s.st_nlink;
-		cout << setw(uWidth + 1) << getpwuid(s.st_uid)->pw_name;
-		cout << setw(gWidth + 1) << getgrgid(s.st_gid)->gr_name;
+		cout << setw(uWidth + 1) << PassID->pw_name;
+		cout << setw(gWidth + 1) << GrID->gr_name;
 		cout << right;
 		cout << setw(sWidth) << s.st_size << " ";
 		cout << left;

@@ -339,6 +339,11 @@ void myPipe(vector<vector<char*>>& args, vector<vector<triple<string, string, in
 						}
 					}
 					pid = fork();
+					if(-1 == pid)
+					{
+						perror("Fork");
+						_exit(1);
+					}
 					// Continues to next iteration after this
 				}
 			}
