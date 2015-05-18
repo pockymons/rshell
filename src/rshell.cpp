@@ -111,9 +111,25 @@ void inputRedir(string file, int replaceFD, int numBrackets)
 	{
 		// In this case, file isn't actually a file; I just didn't rename it; in this case, file is the string to be redirected
 		char buf[BUFSIZ];
+		int fd[2];
+		if(-1 == pipe(fd))
+		{
+			perror("Pipe");
+			_exit(1);
+		}
+		if(-1 == close(replaceFD))
+		{
+			perror("Close");
+			_exit(1);
+		}
+		if(-1 == dup2(fd[0], replaceFD))
+		{
+			perror("Dup");
+			_exit(1);
+		}
 		while(file.size() > 0)
 		{
-
+			int sizeofBuf = BUFSIZ;
 			for(unsigned int i = 0; i < BUFSIZ; ++i)
 			{
 				if(i < file.size())
@@ -122,15 +138,26 @@ void inputRedir(string file, int replaceFD, int numBrackets)
 				}
 				else
 				{
+					sizeofBuf = i;
 					break;
 				}
 			}
 			file.erase(0, BUFSIZ);
-			if(-1 == write(replaceFD, buf, sizeof(buf)))
+			if(-1 == write(fd[1], buf, sizeofBuf))
 			{
 				perror("Write");
 				_exit(1);
 			}
+		}
+		if(-1 == write(fd[1], "\n", 1))
+		{
+			perror("Write");
+			_exit(1);
+		}
+		if(-1 == close(fd[1]))
+		{
+			perror("Close fd");
+			_exit(1);
 		}
 	}
 }
