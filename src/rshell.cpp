@@ -686,6 +686,32 @@ int main()
 						addBegin = "";
 					}
 					
+					int oFrom = 1; // 1 for stdout
+					bool oFromChanged = false;
+					int firstOut = tokenString.find(">");
+					int o = 0;
+					for(o = 0; o < firstOut; ++o)
+					{
+						int fdnum = 0;
+						// if is digit
+						if(tokenString.at(o) > 47 && tokenString.at(o) < 58)
+						{
+							int tempNum = tokenString.at(o);
+							tempNum -= 48;
+							fdnum += pow(10, o) * tempNum;
+						}
+						else
+						{
+							o = 0;
+							break;
+						}
+						if(o == firstOut - 1)
+						{
+							oFromChanged = true;
+							oFrom = fdnum;
+						}
+					}
+					
 					// For redirection cases with spaces; eg. >> file
 					int takeAwayLast = 0;
 					if(tokenString.size() > 0 && tokenString.at(tokenString.size() - 1) == '>')
@@ -694,6 +720,10 @@ int main()
 						if(tokenString.size() > 1 && tokenString.at(tokenString.size() - 2) == '>')
 						{
 							++takeAwayLast;
+						}
+						if(oFromChanged && (unsigned int)(o + takeAwayLast) == tokenString.size())
+						{
+							takeAwayLast += o;
 						}
 					}
 					if(tokenString.size() > 0 && tokenString.at(tokenString.size() - 1) == '<')
@@ -709,32 +739,15 @@ int main()
 					addBegin = tokenString.substr(tokenString.size() - takeAwayLast, takeAwayLast);
 					tokenString = tokenString.substr(0, tokenString.size() - takeAwayLast);
 
+
+					if(oFromChanged && (unsigned int)(o + takeAwayLast) == tokenString.size())
+					{
+						takeAwayLast += o;
+					}
+
 					//Token has no spaces
 					//Output redirection
 					
-					int oFrom = 1; // 1 for stdout
-					bool oFromChanged = false;
-					int firstOut = tokenString.find(">");
-					for(int o = 0; o < firstOut; ++o)
-					{
-						int fdnum = 0;
-						// if is digit
-						if(tokenString.at(o) > 47 && tokenString.at(o) < 58)
-						{
-							int tempNum = tokenString.at(o);
-							tempNum -= 48;
-							fdnum += pow(10, o) * tempNum;
-						}
-						else
-						{
-							break;
-						}
-						if(o == firstOut - 1)
-						{
-							oFromChanged = true;
-							oFrom = fdnum;
-						}
-					}
 					if(oFromChanged)
 					{
 						tokenString.erase(0, firstOut);
