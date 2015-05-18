@@ -54,7 +54,7 @@ $ bin/rshell
 
         	; ls
 
-*You cannot pipe too many times, just like in bash. If you pipe too many times you will get an error, something like  `Fork: Resource temporarily unavailable`. You can pipe approximately 15 times.
+\*You cannot pipe too many times, just like in bash. If you pipe too many times you will get an error, something like  `Fork: Resource temporarily unavailable`. You can pipe approximately 15 times.
 
 ### ls
 * The GNU `ls` program will output the year in the `-l` flag, if the last modified date is older than 6 months. My program does not.
