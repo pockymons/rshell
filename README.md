@@ -30,16 +30,31 @@ $ bin/rshell
 * I chose to make comments only work if there is a space before the `#` symbol, just like bash does it.
 * Connectors are ordered from left to right. The command before a connector is checked for each connector. There is no order of precedence.
 * Whitespace followed by a connector will have the same effect as a `;` connector. For example, the following code will have the same result as the `ls` command.
+
+
+
+
 ```
         && ls
 ```
 
+
+
+
 *Having an `exit` command in piping will exit the rshell. This is unlike bash. A bash shell will not do anything (at all) if there is an `exit` command in a pipe.
 *Having multiple io redirections will act just as bash does, meaning that the rightmost output redirection and input redirection will be used. This also means that all output redirections with just 1 angle bracket (`> file1`, `>file2`, etc) will result in truncating the file. Only the rightmost will be overwritten.
 *Errors in the pipe will cause the entire command to end, even if there is a connector. For example the following command would end after the nonexistent `qwer` command:
+
+
+
+
 ```
 	ls | qwer | cat     || ls
 ```
+
+
+
+
 
 *To perform output redirection on whatever file descriptor you want, you must have a space before the file descriptor number and the file descriptor number must be immediately before the output redirection symbol. Rshell can technically take any number as a file descriptor number, but Linux systems only have descriptor numbers 0-9. Also, taking a number from 3-9 is impractical, as they are usually not open. 
 
