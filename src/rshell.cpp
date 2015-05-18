@@ -120,53 +120,9 @@ void inputRedir(string file, int replaceFD, int numBrackets)
 	}
 }
 
-// Each vector within the first vector has the commands between pipes; assume vector is size of 2 or more; checks this condition in main
-void myPipe(vector<vector<char*>>& pipeV)
-{
-	// First command of pipe; leftmost
-	int fd1[2];
-	if(-1 == pipe(fd1))
-	{
-		perror("Pipe");
-		exit(1);
-	}
-	int pid = fork();
-	if(-1 == pid)
-	{
-		perror("Fork");
-		exit(1);
-	}
-	else
-	{
-		if(pid == 0)
-		{
-			if(-1 == close(1))
-			{
-				perror("Close stdout");
-				_exit(1);
-			}
-			if(-1 == dup2(fd1[1], 1))
-			{
-				perror("Redirect stdout");
-				_exit(1);
-			}
-			execvp(pipeV.at(0).at(0), &((pipeV.at(0))[0]));
-			// Following don't run if execvp succeeds
-			perror("Command execution error");
-			_exit(1);
-		}
-		else
-		{
-			// Do nothing 
-			// I like this format
-			// Only case where the process will continue in the function
-		}
-	}
-}
-
 void ioAndExec(vector<vector<char*>>& args, vector<vector<pair<string, string>>>& ioFiles, int argIndex)
 {
-	for(auto iter = ioFiles.at(0).begin(); iter != ioFiles.at(0).end(); ++iter)
+	for(auto iter = ioFiles.at(argIndex).begin(); iter != ioFiles.at(argIndex).end(); ++iter)
 	{
 		if(iter->first == ">")
 		{
@@ -195,6 +151,378 @@ void ioAndExec(vector<vector<char*>>& args, vector<vector<pair<string, string>>>
 	// Following don't run if execvp succeeds
 	perror("Command execution error");
 	_exit(1);
+}
+
+// Each vector within the first vector has the commands between pipes; assume vector is size of 2 or more; checks this condition in main
+void myPipe(vector<vector<char*>>& args, vector<vector<pair<string, string>>>& ioFiles)
+{
+	// First command of pipe; leftmost
+	int fd1[2];
+	if(-1 == pipe(fd1))
+	{
+		perror("Pipe");
+		_exit(1);
+	}
+	int pid = fork();
+	if(-1 == pid)
+	{
+		perror("Fork");
+		_exit(1);
+	}
+	else
+	{
+		if(pid == 0)
+		{
+			if(-1 == close(1))
+			{
+				perror("Close stdout");
+				_exit(1);
+			}
+			if(-1 == dup2(fd1[1], 1))
+			{
+				perror("Redirect stdout");
+				_exit(1);
+			}
+			ioAndExec(args, ioFiles, 0);
+		}
+		else
+		{
+			// Do nothing 
+			// I like this format
+			// Only case where the process will continue in the function
+		}
+	}
+
+	int fd2[2];
+	if(args.size() > 2)
+	{
+		if(-1 == pipe(fd2))
+		{
+			perror("Pipe");
+			_exit(1);
+		}
+	}
+	pid = fork();
+	for(unsigned int i = 1; i < args.size() - 1; ++i)
+	{
+		if(-1 == pid)
+		{
+			perror("Fork");
+			// Wait for previous forks
+			for(unsigned int j = 0; j < i - 1; ++j)
+			{
+				int status;
+				if(-1 == wait(&status))
+				{
+					perror("Wait");
+					_exit(1);
+				}
+			}
+			_exit(1);
+		}
+		else
+		{
+			// If i is odd
+			if(i % 2 == 1)
+			{
+				if(pid == 0)
+				{
+					if(-1 == close(0))
+					{
+						perror("Close stdin");
+						_exit(1);
+					}
+					if(-1 == dup2(fd1[0], 0))
+					{
+						perror("Redirect stdin");
+						_exit(1);
+					}
+					if(-1 == close(fd1[1]))
+					{
+						perror("Close fd1");
+						_exit(1);
+					}
+
+					if(-1 == close(1))
+					{
+						perror("Close stdout");
+						_exit(1);
+					}
+					if(-1 == dup2(fd2[1], 1))
+					{
+						perror("Redirect stdout");
+						_exit(1);
+					}
+
+					ioAndExec(args, ioFiles, i);
+				}
+				else
+				{
+					if(-1 == close(fd1[0]))
+					{
+						perror("Close fd1");
+						// Wait for previously forked processes to end
+						for(unsigned int j = 0; j < i; ++j)
+						{
+							int status;
+							if(-1 == wait(&status))
+							{
+								perror("Wait");
+								_exit(1);
+							}
+						}
+						_exit(1);
+					}
+					if(-1 == close(fd1[1]))
+					{
+						perror("Close fd1");
+						// Wait for previously forked processes to end
+						for(unsigned int j = 0; j < i; ++j)
+						{
+							int status;
+							if(-1 == wait(&status))
+							{
+								perror("Wait");
+								_exit(1);
+							}
+						}
+						_exit(1);
+					}
+					if(i != args.size() - 1)
+					{
+						if(-1 == pipe(fd1))
+						{
+							perror("Pipe fd1");
+							_exit(1);
+						}
+					}
+					pid = fork();
+					// Continues to next iteration after this
+				}
+			}
+			else
+			{
+				if(pid == 0)
+				{
+					if(-1 == close(0))
+					{
+						perror("Close stdin");
+						_exit(1);
+					}
+					if(-1 == dup2(fd2[0], 0))
+					{
+						perror("Redirect stdin");
+						_exit(1);
+					}
+					if(-1 == close(fd2[1]))
+					{
+						perror("Close fd2");
+						_exit(1);
+					}
+
+					if(-1 == close(1))
+					{
+						perror("Close stdout");
+						_exit(1);
+					}
+					if(-1 == dup2(fd1[1], 1))
+					{
+						perror("Redirect stdout");
+						_exit(1);
+					}
+
+					ioAndExec(args, ioFiles, i);
+				}
+				else
+				{
+					if(-1 == close(fd2[0]))
+					{
+						perror("Close fd1");
+						// Wait for previously forked processes to end
+						for(unsigned int j = 0; j < i; ++j)
+						{
+							int status;
+							if(-1 == wait(&status))
+							{
+								perror("Wait");
+								_exit(1);
+							}
+						}
+						_exit(1);
+					}
+					if(-1 == close(fd2[1]))
+					{
+						perror("Close fd1");
+						// Wait for previously forked processes to end
+						for(unsigned int j = 0; j < i; ++j)
+						{
+							int status;
+							if(-1 == wait(&status))
+							{
+								perror("Wait");
+								_exit(1);
+							}
+						}
+						_exit(1);
+					}
+					
+					if(i != args.size() - 1)
+					{
+						if(-1 == pipe(fd2))
+						{
+							perror("Pipe fd2");
+							_exit(1);
+						}
+					}
+					pid = fork();
+					// Continues to next iteration after this
+				}
+			}
+		}
+	}
+
+	if(pid == -1)
+	{
+		perror("Fork");
+		for(unsigned int j = 0; j < args.size() - 1; ++j)
+		{
+			int status;
+			if(-1 == wait(&status))
+			{
+				perror("Wait");
+				_exit(1);
+			}
+		}
+		_exit(1);
+	}
+	else
+	{
+		if(args.size() % 2 == 1)
+		{
+			if(pid == 0)
+			{
+				if(-1 == close(0))
+				{
+					perror("Close stdin");
+					_exit(1);
+				}
+				if(-1 == dup2(fd2[0], 0))
+				{
+					perror("Redirect stdin");
+					_exit(1);
+				}
+				if(-1 == close(fd2[1]))
+				{
+					perror("Close fd2");
+					_exit(1);
+				}
+				ioAndExec(args, ioFiles, args.size() - 1);
+			}
+			else
+			{
+				if(-1 == close(fd2[0]))
+				{
+					perror("Close fd2");
+					for(unsigned int j = 0; j < args.size(); ++j)
+					{
+						int status;
+						if(-1 == wait(&status))
+						{
+							perror("Wait");
+							_exit(1);
+						}
+					}
+					_exit(1);
+				}
+				if(-1 == close(fd2[1]))
+				{
+					perror("Close fd2");
+					for(unsigned int j = 0; j < args.size(); ++j)
+					{
+						int status;
+						if(-1 == wait(&status))
+						{
+							perror("Wait");
+							_exit(1);
+						}
+					}
+					_exit(1);
+				}
+			}
+		}
+		else
+		{
+			if(pid == 0)
+			{
+				if(-1 == close(0))
+				{
+					perror("Close stdin");
+					_exit(1);
+				}
+				if(-1 == dup2(fd1[0], 0))
+				{
+					perror("Redirect stdin");
+					_exit(1);
+				}
+				if(-1 == close(fd1[1]))
+				{
+					perror("Close fd1");
+					_exit(1);
+				}
+				ioAndExec(args, ioFiles, args.size() - 1);
+			}
+			else
+			{
+				if(-1 == close(fd1[0]))
+				{
+					perror("Close fd1");
+					for(unsigned int j = 0; j < args.size(); ++j)
+					{
+						int status;
+						if(-1 == wait(&status))
+						{
+							perror("Wait");
+							_exit(1);
+						}
+					}
+					_exit(1);
+				}
+				if(-1 == close(fd1[1]))
+				{
+					perror("Close fd1");
+					for(unsigned int j = 0; j < args.size(); ++j)
+					{
+						int status;
+						if(-1 == wait(&status))
+						{
+							perror("Wait");
+							_exit(1);
+						}
+					}
+					_exit(1);
+				}
+			}
+		}
+	}
+
+	// totalStatus will equal 1 if there is any error
+	int totalStatus = 0;
+	for(unsigned int j = 0; j < args.size(); ++j)
+	{
+		int status;
+		if(-1 == wait(&status))
+		{
+			perror("Wait");
+			_exit(1);
+		}
+		totalStatus = (totalStatus | WEXITSTATUS(status));
+	}
+	// Bash _exits entire command, if one between pipe fails
+	if(totalStatus != 0)
+	{
+		_exit(1);
+	}
+	_exit(0);
 }
 
 int main()
@@ -476,6 +804,7 @@ int main()
 						if(waitVar == -1) // If child process has error
 						{
 							perror("Child process error");
+							exit(1);
 							// exits if next connector is && or one-past-end element
 							// continues if next connector is ; or ||
 							
@@ -507,7 +836,50 @@ int main()
 			}
 			else
 			{
-				// myPipe
+				int pid = fork();
+				if(pid == -1) // If fork fails
+				{
+					perror("Fork error");
+					exit(1);
+				}
+				else
+				{
+					if(pid == 0) // Child process
+					{
+						myPipe(args, ioFiles);
+					}
+					else
+					{
+						int status; 
+						int waitVar = wait(&status);
+						if(waitVar == -1) // If child process has error
+						{
+							perror("Child process error");
+							exit(1);
+							// exits if next connector is && or one-past-end element
+							// continues if next connector is ; or ||
+							
+						}
+						else
+						{
+							int exitStatus = WEXITSTATUS(status); // Checks whether returns 0/1 when exiting
+							if(exitStatus == 1) // If unsuccessful command
+							{
+								// Bash exits entire command if one part of pipe fails
+								break;
+							}
+							else
+							{
+								if(connectorLocs.at(i+1) < commandLine.size() && 
+									commandLine.at(connectorLocs.at(i+1)) == '|')
+								{
+									//cout << commandLine.at(connectorLocs.at(i+1)) << endl; // DEBUGGING
+									break;
+								}
+							}
+						}
+					}
+				}
 			}
 		}
 	}
