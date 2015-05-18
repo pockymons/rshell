@@ -33,6 +33,13 @@ $ bin/rshell
 ```
         && ls
 ```
+*Having an `exit` command in piping will exit the rshell. This is unlike bash. A bash shell will not do anything (at all) if there is an `exit` command in a pipe.
+*Having multiple io redirections will act just as bash does, meaning that the rightmost output redirection and input redirection will be used. This also means that all output redirections with just 1 angle bracket (`> file1`, `>file2`, etc) will result in truncating the file. Only the rightmost will be overwritten.
+*Errors in the pipe will cause the entire command to end, even if there is a connector. For example the following command would end after the nonexistent `qwer` command:
+```
+	ls | qwer | cat     || ls
+```
+*To perform output redirection on whatever file descriptor you want, you must have a space before the file descriptor number and the file descriptor number must be immediately before the output redirection symbol. Rshell can technically take any number as a file descriptor number, but Linux systems only have descriptor numbers 0-9. Also, taking a number from 3-9 is impractical, as they are usually not open. 
 
 ##Limitations/Bugs
 ### rshell
@@ -47,6 +54,7 @@ $ bin/rshell
 ```
        ; ls
 ```
+*You cannot pipe too many times, just like in bash. If you pipe too many times you will get an error, something like  `Fork: Resource temporarily unavailable`. You can pipe approximately 15 times.
 ### ls
 * The GNU `ls` program will output the year in the `-l` flag, if the last modified date is older than 6 months. My program does not.
 * My `ls` does not list the symbolic links.

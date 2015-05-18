@@ -1,0 +1,830 @@
+Script started on Mon 18 May 2015 03:40:46 AM PDT
+~
+jwong066@hammer $ cs100
+[0;91m
+===============================================================================
+|                                                                             |
+| You have enabled settings specific for cs100.  Everything you do is being   |
+| recorded to measure your progress in the class.                             |
+|                                                                             |
+| Important commands for the class:                                           |
+|   * calcgrade.sh          displays a detailed breakdown of your grade       |
+|   * checksyscalls.sh      is your cpp file doing proper error checking?     |
+|   * typespeed             practice typing unix commands                     |
+|                                                                             |
+| Important commands for general C++ programming:                             |
+|   * make                  don't call g++ manually; let make do the work!    |
+|   * gdb                   the GNU debugger                                  |
+|   * valgrind              get rid of your memory leaks                      |
+|   * cppcheck              static analysis tool                              |
+|   * man                   find help about any syscall / terminal command    |
+|                                                                             |
+===============================================================================
+[0m
+[s%%%%%%%%%%[u[0;32mjwong066[0;36m@[0;32mcs100[0;36m:[0;32m~[0;95m [0;36m$[0m cd CS100/Assn/rshell/
+[s%%%%%%%%%%[u[0;32mjwong066[0;36m@[0;32mcs100[0;36m:[0;32m~/CS100/Assn/rshell[0;95m (redirect) [0;36m$[0m bin/rshell
+jwong066@hammer.cs.ucr.edu $ echo Run basic tests to show previous features still work
+Run basic tests to show previous features still work
+jwong066@hammer.cs.ucr.edu $ ls   &&        ls         &&       ls
+bin  LICENSE  Makefile	README.md  src	testDir  testFile  testFile1  testFile2  testFile3  testFile4NoWr  tests
+bin  LICENSE  Makefile	README.md  src	testDir  testFile  testFile1  testFile2  testFile3  testFile4NoWr  tests
+bin  LICENSE  Makefile	README.md  src	testDir  testFile  testFile1  testFile2  testFile3  testFile4NoWr  tests
+jwong066@hammer.cs.ucr.edu $ ls          ||         ls           ||       ls
+bin  LICENSE  Makefile	README.md  src	testDir  testFile  testFile1  testFile2  testFile3  testFile4NoWr  tests
+jwong066@hammer.cs.ucr.edu $      ls ; ls  ;ls
+bin  LICENSE  Makefile	README.md  src	testDir  testFile  testFile1  testFile2  testFile3  testFile4NoWr  tests
+bin  LICENSE  Makefile	README.md  src	testDir  testFile  testFile1  testFile2  testFile3  testFile4NoWr  tests
+bin  LICENSE  Makefile	README.md  src	testDir  testFile  testFile1  testFile2  testFile3  testFile4NoWr  tests
+jwong066@hammer.cs.ucr.edu $ echo Now I will show the contec nts of the files we use to test
+Now I will show the contents of the files we use to test
+jwong066@hammer.cs.ucr.edu $ cat testFile1
+jwong066@hammer.cs.ucr.edu $ cat testFile2
+jwong066@hammer.cs.ucr.edu $ cat testFile3
+jwong066@hammer.cs.ucr.edu $ echo Testing output
+Testing output
+jwong066@hammer.cs.ucr.edu $ ls >t      testFile1      #Output test, + spaces
+jwong066@hammer.cs.ucr.edu $ cat testFile1
+bin
+LICENSE
+Makefile
+README.md
+src
+testDir
+testFile
+testFile1
+testFile2
+testFile3
+testFile4NoWr
+tests
+jwong066@hammer.cs.ucr.edu $ ls             >            testFile1        #No command
+jwong066@hammer.cs.ucr.edu $ cat testFie le1
+jwong066@hammer.cs.ucr.edu $ ls          >                  testFile1         > t  testFile2      >testFile3      #Multiple r output redirects
+jwong066@hammer.cs.ucr.edu $ cat testFile1
+jwong066@hammer.cs.ucr.edu $ cat testFile2
+jwong066@hammer.cs.ucr.edu $ cat testFile3
+bin
+LICENSE
+Makefile
+README.md
+src
+testDir
+testFile
+testFile1
+testFile2
+testFile3
+testFile4NoWr
+tests
+jwong066@hammer.cs.ucr.edu $ pwd          >testFile1     >   testFile2     >  testFile3       >testFile1>testFile2>testFile3  >testFile1>tet stFile2< >testFile3  . >testFile3
+jwong066@hammer.cs.ucr.edu $ cat testFile3
+/home/csmajs/jwong066/CS100/Assn/rshell
+jwong066@hammer.cs.ucr.edu $ cat testFile1
+jwong066@hammer.cs.ucr.edu $ cat testFile2
+jwong066@hammer.cs.ucr.edu $ pwd   .            >>      testFile3       #Append test
+jwong066@hammer.cs.ucr.edu $ cat testFile3
+/home/csmajs/jwong066/CS100/Assn/rshell
+/home/csmajs/jwong066/CS100/Assn/rshell
+jwong066@hammer.cs.ucr.edu $     pwd      >>  testFile3        >>testFile2     >>testFile1     >>testFile3       #Multiple appends
+jwong066@hammer.cs.ucr.edu $ cat testFile1
+jwong066@hammer.cs.ucr.edu $ cat testFile2
+jwong066@hammer.cs.ucr.edu $ cat testFile3
+/home/csmajs/jwong066/CS100/Assn/rshell
+/home/csmajs/jwong066/CS100/Assn/rshell
+/home/csmajs/jwong066/CS100/Assn/rshell
+jwong066@hammer.cs.ucr.edu $ pwd     ls          >>testFile2>>testFile3     >>testFile1    >> testFile1    >>testFile2    >>testFile3>>testFile1>>testFile2>>testFile2 3   >>testFile1
+jwong066@hammer.cs.ucr.edu $ cat testFile1
+bin
+LICENSE
+Makefile
+README.md
+src
+testDir
+testFile
+testFile1
+testFile2
+testFile3
+testFile4NoWr
+tests
+jwong066@hammer.cs.ucr.edu $ cat testFile2
+jwong066@hammer.cs.ucr.edu $ cat testFile3
+/home/csmajs/jwong066/CS100/Assn/rshell
+/home/csmajs/jwong066/CS100/Assn/rshell
+/home/csmajs/jwong066/CS100/Assn/rshell
+jwong066@hammer.cs.ucr.edu $ lss                   g++ nonexistentfile        2> >     testFile1    #Extra credit, number before output redirection
+jwong066@hammer.cs.ucr.edu $ cat testFile1
+g++: error: nonexistentfile: No such file or directory
+g++: fatal error: no input files
+compilation terminated.
+jwong066@hammer.cs.ucr.edu $ g++      nonexistentfile      2  >testFile1       2>testFile1     2>testFile1      2>testFile1      2>testFile2     2>testFile2
+jwong066@hammer.cs.ucr.edu $ cat testFile1
+jwong066@hammer.cs.ucr.edu $ cat testFile2
+g++: error: nonexistentfile: No such file or directory
+g++: fatal error: no input files
+compilation terminated.
+jwong066@hammer.cs.ucr.edu $ g++        nonexitentfile       2>>     testFile3     #Extra credit, number before append
+jwong066@hammer.cs.ucr.edu $ cat testFile3
+/home/csmajs/jwong066/CS100/Assn/rshell
+/home/csmajs/jwong066/CS100/Assn/rshell
+/home/csmajs/jwong066/CS100/Assn/rshell
+g++: error: nonexitentfile: No such file or directory
+g++: fatal error: no input files
+compilation terminated.
+jwong066@hammer.cs.ucr.edu $  g++      nonexistent       2>>testFile3        3 2>>  testFile2        2>>testFile1        2>>testFile3        1 2>>testFile1      2>>testFile3 #Testing multiple number f bf efore append
+jwong066@hammer.cs.ucr.edu $ cat testFile1
+jwong066@hammer.cs.ucr.edu $ cat testFile2
+g++: error: nonexistentfile: No such file or directory
+g++: fatal error: no input files
+compilation terminated.
+jwong066@hammer.cs.ucr.edu $ cat testFile3
+/home/csmajs/jwong066/CS100/Assn/rshell
+/home/csmajs/jwong066/CS100/Assn/rshell
+/home/csmajs/jwong066/CS100/Assn/rshell
+g++: error: nonexitentfile: No such file or directory
+g++: fatal error: no input files
+compilation terminated.
+g++: error: nonexistent: No such file or directory
+g++: fatal error: no input files
+compilation terminated.
+jwong066@hammer.cs.ucr.edu $ g++    nonexit stent fi   file          3 3>>      testFile3            #Output redirection of different fd
+Open: Bad file descriptor
+jwong066@hammer.cs.ucr.edu $ echo Should be having error since it      we don't o have fd 3 open
+Should be having error since we don't have fd 3 open
+jwong066@hammer.cs.ucr.edu $ g++ nonexistentfile           3  >testFile3      3>testFile3   3>testFile3      3>testFile2     3>testFile3   #Output redirection of different fd; should have errors
+Open: Bad file descriptor
+jwong066@hammer.cs.ucr.edu $ cat testFile3
+jwong066@hammer.cs.ucr.edu $ cat testFile2
+g++: error: nonexistentfile: No such file or directory
+g++: fatal error: no input files
+compilation terminated.
+jwong066@hammer.cs.ucr.edu $ g++   g++   nonexistentfile              3>>testFile3       #Ape pend fo  of   diff     f different fd, should hav e  e errors
+Open: Bad file descriptor
+jwong066@hammer.cs.ucr.edu $ cat testFile3
+jwong066@hammer.cs.ucr.edu $ g++    nonexistentfile        3>. >testFile3       3>>testFile3       3>>testFile3     3 3>>testFile2        3>>testFile3
+Open: Bad file descriptor
+jwong066@hammer.cs.ucr.edu $ cat testFile3
+jwong066@hammer.cs.ucr.edu $ cat testFile2
+g++: error: nonexistentfile: No such file or directory
+g++: fatal error: no input files
+compilation terminated.
+jwong066@hammer.cs.ucr.edu $ echo Input test
+Input test
+jwong066@hammer.cs.ucr.edu $ <test             <testFile3       
+jwong066@hammer.cs.ucr.edu $         echo           <                cat        <tet stFile3
+jwong066@hammer.cs.ucr.edu $ cat             cat >testFile             cat   ls     >testFile3
+jwong066@hammer.cs.ucr.edu $        cat       <        testFile3
+bin
+LICENSE
+Makefile
+README.md
+src
+testDir
+testFile
+testFile1
+testFile2
+testFile3
+testFile4NoWr
+tests
+jwong066@hammer.cs.ucr.edu $        cat  <     testFile3     #testing input with file
+bin
+LICENSE
+Makefile
+README.md
+src
+testDir
+testFile
+testFile1
+testFile2
+testFile3
+testFile4NoWr
+tests
+jwong066@hammer.cs.ucr.edu $          cat          <testFile3        <       testFile3        < testFile2         3 #Multiple inputs
+g++: error: nonexistentfile: No such file or directory
+g++: fatal error: no input files
+compilation terminated.
+jwong066@hammer.cs.ucr.edu $ cat testFile32
+cat: testFile32: No such file or directory
+jwong066@hammer.cs.ucr.edu $ cat testFile2
+g++: error: nonexistentfile: No such file or directory
+g++: fatal error: no input files
+compilation terminated.
+jwong066@hammer.cs.ucr.edu $ c        cat         <testFile3         <testFile2       <testFile1         <testFile3    <testFile2      <testFile32  1       <testFile3      <testFile2      <testFile1          <testFile3     #Multiple inputs
+bin
+LICENSE
+Makefile
+README.md
+src
+testDir
+testFile
+testFile1
+testFile2
+testFile3
+testFile4NoWr
+tests
+jwong066@hammer.cs.ucr.edu $ cat testFile3
+bin
+LICENSE
+Makefile
+README.md
+src
+testDir
+testFile
+testFile1
+testFile2
+testFile3
+testFile4NoWr
+tests
+jwong066@hammer.cs.ucr.edu $ cat        <<, > <      meow     #Input string
+meow
+jwong066@hammer.cs.ucr.edu $         cat                         <<<     meow       #String, no command
+jwong066@hammer.cs.ucr.edu $         cat         <<<moe  eow        <<<  rar       <<<cs        <<<       qwer       <<<asdf      <<<asdf       <<<asdf       <<<asdf        <<<ooo          <<< qwer #Lots of input strei  ing
+qwer
+jwong066@hammer.cs.ucr.edu $ echo Pipe tests
+Pipe tests
+jwong066@hammer.cs.ucr.edu $           ls      |        cat
+bin
+LICENSE
+Makefile
+README.md
+src
+testDir
+testFile
+testFile1
+testFile2
+testFile3
+testFile4NoWr
+tests
+jwong066@hammer.cs.ucr.edu $            ls      |    grep       test        |      cat
+testDir
+testFile
+testFile1
+testFile2
+testFile3
+testFile4NoWr
+tests
+jwong066@hammer.cs.ucr.edu $            ls          -a       |            grep       test         |    grep   File       |     cat
+testFile
+testFile1
+testFile2
+testFile3
+testFile4NoWr
+jwong066@hammer.cs.ucr.edu $ ls         -a          -l   al        |     gret p  test       |cat  |     grep   1        |       cat
+drwx------ 3 jwong066 csmajs 4096 May  1 20:57 testDir
+-rw------- 1 jwong066 csmajs   20 May 15 10:08 testFile
+-rw------- 1 jwong066 csmajs    0 May 18 03:45 testFile1
+-rw------- 1 jwong066 csmajs  112 May 18 03:45 testFile2
+-rw------- 1 jwong066 csmajs  102 May 18 03:53 testFile3
+---------- 1 jwong066 csmajs   12 May 14 23:53 testFile4NoWr
+drwx------ 2 jwong066 csmajs 4096 May 18 03:34 tests
+jwong066@hammer.cs.ucr.edu $ pwd      |        cat           |cat|cat|cat|cat|cat|cat|cat|cat|g cat     #Lots of pipes
+Fork: Resource temporarily unavailable
+jwong066@hammer.cs.ucr.edu $ echo      pwd  |cat|cat|cat|cat                   echo e Ex       pwd} |cat|cat|cat|cat|cat|cat|grep CS
+/home/csmajs/jwong066/CS100/Assn/rshell
+jwong066@hammer.cs.ucr.edu $ echo        Mix inputs
+Mix inputs
+jwong066@hammer.cs.ucr.edu $      cat      <     testFile1       <<< meow
+meow
+jwong066@hammer.cs.ucr.edu $ cat         <<< meow         <testFile1     #Reverse the order
+jwong066@hammer.cs.ucr.edu $ echo r Reversing the order makes a difr ference
+Reversing the order makes a difference
+jwong066@hammer.cs.ucr.edu $ cat            <   testFile1      <<<qwer        <testFile2    <<< qwer      # <<<qwer    uiop     <testFile3       #Order makes a             Mixing inputs
+bin
+LICENSE
+Makefile
+README.md
+src
+testDir
+testFile
+testFile1
+testFile2
+testFile3
+testFile4NoWr
+tests
+jwong066@hammer.cs.ucr.edu $        cat         <<<qwer       < testFile1      <testFile2        <<<qwer      <<uiop    <testFile                   <testFile3      <<<qwer    uiop     #Mixing inputs
+uiop
+jwong066@hammer.cs.ucr.edu $ echo Mix outputs
+Mix outputs
+jwong066@hammer.cs.ucr.edu $ ls     >          testFile1         >>testFile1 2       2>testFile3       2>>  testFile3 1      #Mix u outputs 
+jwong066@hammer.cs.ucr.edu $ cat testFile1
+jwong066@hammer.cs.ucr.edu $ cat testFile2
+g++: error: nonexistentfile: No such file or directory
+g++: fatal error: no input files
+compilation terminated.
+bin
+LICENSE
+Makefile
+README.md
+src
+testDir
+testFile
+testFile1
+testFile2
+testFile3
+testFile4NoWr
+tests
+jwong066@hammer.cs.ucr.edu $ cat testFile3
+jwong066@hammer.cs.ucr.edu $ cat testFile1
+jwong066@hammer.cs.ucr.edu $ >testFile1 4
+jwong066@hammer.cs.ucr.edu $ cat testFile43 
+jwong066@hammer.cs.ucr.edu $ ls          cat >testFile4        meow       #Chec    Setting up file      the file
+cat: meow: No such file or directory
+jwong066@hammer.cs.ucr.edu $ ech   cat >testFile4        <<<meow      #Setting up the file
+jwong066@hammer.cs.ucr.edu $ cat testFile4
+meow
+jwong066@hammer.cs.ucr.edu $ ls             >testFile1     >>testFile2      2>testFile3     2>>testFile1     #Mix outputs
+jwong066@hammer.cs.ucr.edu $ cat testFile1
+jwong066@hammer.cs.ucr.edu $ cat testFile2
+g++: error: nonexistentfile: No such file or directory
+g++: fatal error: no input files
+compilation terminated.
+bin
+LICENSE
+Makefile
+README.md
+src
+testDir
+testFile
+testFile1
+testFile2
+testFile3
+testFile4NoWr
+tests
+bin
+LICENSE
+Makefile
+README.md
+src
+testDir
+testFile
+testFile1
+testFile2
+testFile3
+testFile4
+testFile4NoWr
+tests
+jwong066@hammer.cs.ucr.edu $ cat testFile3
+jwong066@hammer.cs.ucr.edu $ cat testFile            echo      Ignore that last test
+Ignore that last test
+jwong066@hammer.cs.ucr.edu $ ls       >     testFile1       >>testFile2       2>testFile3      2>>testFile3 4    #Mix outputs
+jwong066@hammer.cs.ucr.edu $ cat testFile1
+jwong066@hammer.cs.ucr.edu $ cat testFile2
+g++: error: nonexistentfile: No such file or directory
+g++: fatal error: no input files
+compilation terminated.
+bin
+LICENSE
+Makefile
+README.md
+src
+testDir
+testFile
+testFile1
+testFile2
+testFile3
+testFile4NoWr
+tests
+bin
+LICENSE
+Makefile
+README.md
+src
+testDir
+testFile
+testFile1
+testFile2
+testFile3
+testFile4
+testFile4NoWr
+tests
+bin
+LICENSE
+Makefile
+README.md
+src
+testDir
+testFile
+testFile1
+testFile2
+testFile3
+testFile4
+testFile4NoWr
+tests
+jwong066@hammer.cs.ucr.edu $ cat testFile3
+jwong066@hammer.cs.ucr.edu $ cat testFile4
+meow
+jwong066@hammer.cs.ucr.edu $ cat                       ls     >>testFile2 2    >testFile1       > 2>testFile3           >testFile4      2>testFile3
+jwong066@hammer.cs.ucr.edu $ cat testFile1
+bin
+LICENSE
+Makefile
+README.md
+src
+testDir
+testFile
+testFile1
+testFile2
+testFile3
+testFile4
+testFile4NoWr
+tests
+jwong066@hammer.cs.ucr.edu $ cat testFile2
+g++: error: nonexistentfile: No such file or directory
+g++: fatal error: no input files
+compilation terminated.
+bin
+LICENSE
+Makefile
+README.md
+src
+testDir
+testFile
+testFile1
+testFile2
+testFile3
+testFile4NoWr
+tests
+bin
+LICENSE
+Makefile
+README.md
+src
+testDir
+testFile
+testFile1
+testFile2
+testFile3
+testFile4
+testFile4NoWr
+tests
+bin
+LICENSE
+Makefile
+README.md
+src
+testDir
+testFile
+testFile1
+testFile2
+testFile3
+testFile4
+testFile4NoWr
+tests
+jwong066@hammer.cs.ucr.edu $ cat testFile3
+jwong066@hammer.cs.ucr.edu $ cat testFile4
+meow
+jwong066@hammer.cs.ucr.edu $ c ls     >testFile1         > 2>test    >tesF tFile4     >>testFile2      > 2>testFile              >      > testFile3
+jwong066@hammer.cs.ucr.edu $ c echo      testFile        cat testFile1
+jwong066@hammer.cs.ucr.edu $ cat testFile2
+g++: error: nonexistentfile: No such file or directory
+g++: fatal error: no input files
+compilation terminated.
+bin
+LICENSE
+Makefile
+README.md
+src
+testDir
+testFile
+testFile1
+testFile2
+testFile3
+testFile4NoWr
+tests
+bin
+LICENSE
+Makefile
+README.md
+src
+testDir
+testFile
+testFile1
+testFile2
+testFile3
+testFile4
+testFile4NoWr
+tests
+bin
+LICENSE
+Makefile
+README.md
+src
+testDir
+testFile
+testFile1
+testFile2
+testFile3
+testFile4
+testFile4NoWr
+tests
+bin
+LICENSE
+Makefile
+README.md
+src
+testDir
+testFile
+testFile1
+testFile2
+testFile3
+testFile4
+testFile4NoWr
+tests
+jwong066@hammer.cs.ucr.edu $ cat testFile3
+jwong066@hammer.cs.ucr.edu $ Cat testFile4
+Command execution error: No such file or directory
+jwong066@hammer.cs.ucr.edu $ cat testFile4
+meow
+jwong066@hammer.cs.ucr.edu $ echo mi  Mix inputs and oup tputs
+Mix inputs and outputs
+jwong066@hammer.cs.ucr.edu $ cat <testFile1       >     testFile2
+jwong066@hammer.cs.ucr.edu $ cat testFile1
+jwong066@hammer.cs.ucr.edu $ cat tesF tf File2
+jwong066@hammer.cs.ucr.edu $ ls > >testFie le1
+jwong066@hammer.cs.ucr.edu $ cat  <    testFile1      >testFile2    #te  Mxing    ixing input and output
+jwong066@hammer.cs.ucr.edu $ cat testFile1
+bin
+LICENSE
+Makefile
+README.md
+src
+testDir
+testFile
+testFile1
+testFile2
+testFile3
+testFile4
+testFile4NoWr
+tests
+jwong066@hammer.cs.ucr.edu $ cat testFile222  
+bin
+LICENSE
+Makefile
+README.md
+src
+testDir
+testFile
+testFile1
+testFile2
+testFile3
+testFile4
+testFile4NoWr
+tests
+jwong066@hammer.cs.ucr.edu $ cat       >testFile2       <testFile1     #Order deo  oesnt mat     't matter
+jwong066@hammer.cs.ucr.edu $ cat testFile1
+bin
+LICENSE
+Makefile
+README.md
+src
+testDir
+testFile
+testFile1
+testFile2
+testFile3
+testFile4
+testFile4NoWr
+tests
+jwong066@hammer.cs.ucr.edu $ cat testFile2
+bin
+LICENSE
+Makefile
+README.md
+src
+testDir
+testFile
+testFile1
+testFile2
+testFile3
+testFile4
+testFile4NoWr
+tests
+jwong066@hammer.cs.ucr.edu $ pwd         >testFile                     pwd > testFile1 #s Setting up next test
+jwong066@hammer.cs.ucr.edu $ ca  t testFile1
+/home/csmajs/jwong066/CS100/Assn/rshell
+jwong066@hammer.cs.ucr.edu $ cat    <testFile1          >testFile2      <tes                               2         >testFile1             <testFile1        >test                                               <testFile1   >testFile2      >testFile                1   >testFile2
+jwong066@hammer.cs.ucr.edu $ cat testFile1
+jwong066@hammer.cs.ucr.edu $ cat testFile2
+jwong066@hammer.cs.ucr.edu $ cat        >testFile1        <<<testFile        qwerty    #Mixing input and output
+jwong066@hammer.cs.ucr.edu $ cat testFile1
+qwerty
+jwong066@hammer.cs.ucr.edu $ cat       <<<qwery ty        >testFile2        #Mixing in  put and output
+jwong066@hammer.cs.ucr.edu $ cat t testFile2
+qwerty
+jwong066@hammer.cs.ucr.edu $ cat         <<<qwerty       >testFile2        <<<qwe   asdfadsf         >testFile1
+jwong066@hammer.cs.ucr.edu $ cat testFiletestexit                d testFile1
+asdfadsf
+jwong066@hammer.cs.ucr.edu $ cat testFile2
+jwong066@hammer.cs.ucr.edu $ asdf    cat          >>       testFile1          <  testFile3 4                                                             testFile4 #Setting up for next test
+meow
+jwong066@hammer.cs.ucr.edu $ cat       >>testFile1     <      testFile4
+jwong066@hammer.cs.ucr.edu $ cat testFile1
+asdfadsf
+meow
+jwong066@hammer.cs.ucr.edu $ cat testFile4
+meow
+jwong066@hammer.cs.ucr.edu $ cat      <  testFile4       >>testFile1        #Mxing      ixing input and output, order doesn't matter
+jwong066@hammer.cs.ucr.edu $ cat testFile4
+meow
+jwong066@hammer.cs.ucr.edu $ cat testFile1
+asdfadsf
+meow
+meow
+jwong066@hammer.cs.ucr.edu $ cat       <testFile4       >>testFile1         <testFile1         <testFile 4  4     >>testFile1 2   >>testFile1
+jwong066@hammer.cs.ucr.edu $ cat testFile1
+asdfadsf
+meow
+meow
+meow
+jwong066@hammer.cs.ucr.edu $ cat testFile2
+jwong066@hammer.cs.ucr.edu $ cat testFile4
+meow
+jwong066@hammer.cs.ucr.edu $ cat         >>  testFil1             e1 2      <<< < jkl;    #Mixing   input and output
+Syntax error
+[s%%%%%%%%%%[u[0;32mjwong066[0;36m@[0;32mcs100[0;36m:[0;32m~/CS100/Assn/rshell[0;95m (redirect) [0;36m$[0m rs[K[Kbin/rshell 
+jwong066@hammer.cs.ucr.edu $ echo ign   Ign  gnore the last test;     , the semil colon was interprety ted as      ed as a connector
+Ignore the last test, the semicolon was interpreted as a connector
+jwong066@hammer.cs.ucr.edu $ cat        >>testFile2         <<<      qwer
+jwong066@hammer.cs.ucr.edu $ cat testFile2
+jkl
+qwer
+jwong066@hammer.cs.ucr.edu $ d cat      >>testFile2                                   <<<    tyu        >.testF      >testi File2          #Mixing o input and output
+jwong066@hammer.cs.ucr.edu $ cat testFile2
+jkl
+qwer
+tyu
+jwong066@hammer.cs.ucr.edu $ cat       <<<ty         >>testFile2           <<<meow        >>testFile4           <<<qwer         >>testFile1     >>testFile1 2   <<<dog      dog #Mixn g   ing and         g input and oupt  tput
+jwong066@hammer.cs.ucr.edu $ cat testFile1
+asdfadsf
+meow
+meow
+meow
+jwong066@hammer.cs.ucr.edu $ cat testFile2
+jkl
+qwer
+tyu
+dog
+jwong066@hammer.cs.ucr.edu $ cat testFile4
+meow
+jwong066@hammer.cs.ucr.edu $ echo Mix and match         p input, output redirection as well as pipes
+Mix input, output redirection as well as pipes
+jwong066@hammer.cs.ucr.edu $ cat          <    testFile1         |    grep      tr A-Z a-z     |    grep      m M       | |    cat      >       testFile5        #Mx ixing input, ouyt          o redirection as well as pipes, creates a nonexistn ing file   (testFile5)
+jwong066@hammer.cs.ucr.edu $ cat testFile5
+jwong066@hammer.cs.ucr.edu $ cat        <       testFile1      |        tr a-z     A-z Z    | grep     M     |     cat  >t  testFile5     #Mixing io redirectiona  and pipes
+jwong066@hammer.cs.ucr.edu $ cat testFile5
+MEOW
+MEOW
+MEOW
+jwong066@hammer.cs.ucr.edu $ cat      <     testFile1                              testFile2
+jkl
+qwer
+tyu
+dog
+jwong066@hammer.cs.ucr.edu $ cat    <testFile1           |    cat  |     cat|        cat |    cat|     cat|     grep    tyu     | cat>testFile2   #mixi    Mixing io redirection and piping
+jwong066@hammer.cs.ucr.edu $ cat testFile2
+jwong066@hammer.cs.ucr.edu $ cat       <testFile2      |    cat   |      cat|      cat     |c                                                                cat >testFile2     <<<asdf
+jwong066@hammer.cs.ucr.edu $ cat > testFile2       <<<as
+jwong066@hammer.cs.ucr.edu $ ech   cat      <testFile2        |     cat \ |cat|cat|cat|cat   grep   |  |grep     as    |     cat >testFile1   #Mixing io redirection and piping
+jwong066@hammer.cs.ucr.edu $ cat testFile1
+as
+jwong066@hammer.cs.ucr.edu $ cat >>asdf      testFile2      <<<asdf
+jwong066@hammer.cs.ucr.edu $ cat testFile2
+as
+asdf
+jwong066@hammer.cs.ucr.edu $ cat      <  testFile2    |      cat |cat|cat|cat|cat   | grep asdf       | cat >testFile1    #Mixing io redirection and piping
+jwong066@hammer.cs.ucr.edu $ cat testFile1
+as
+asdf
+jwong066@hammer.cs.ucr.edu $ ls       |          s cat          <           testFile2      |    cat      |cat        | cat >testFile1    #Input in the middle
+jwong066@hammer.cs.ucr.edu $ cat testFile1
+as
+asdf
+jwong066@hammer.cs.ucr.edu $ cat <testFile2      |   cat      |      cat >testFile1   | cat      #I Output int    the middle
+jwong066@hammer.cs.ucr.edu $ cat testFile1
+as
+asdf
+jwong066@hammer.cs.ucr.edu $ cat           <               s ls     |     cat <testFile1 2    |   cat>test    testFile1   | cat #Input and pou   output redirection in the middle
+jwong066@hammer.cs.ucr.edu $ cat testFile2
+as
+asdf
+jwong066@hammer.cs.ucr.edu $ cat testFile1
+as
+asdf
+jwong066@hammer.cs.ucr.edu $ echo Redio  oing that
+Redoing that
+jwong066@hammer.cs.ucr.edu $ ls    >testFile1
+jwong066@hammer.cs.ucr.edu $ cat testFile1
+jwong066@hammer.cs.ucr.edu $ ls  |     cat <testFile2    |       cat>testFile1     | cat    #Input and output redirection in the middle
+jwong066@hammer.cs.ucr.edu $ cat testFile1
+as
+asdf
+jwong066@hammer.cs.ucr.edu $ cat testFile2
+as
+asdf
+jwong066@hammer.cs.ucr.edu $ ls        |      cat        < testFile2     > testFile1   | cat      #Input and output redirection in the same pipe command
+jwong066@hammer.cs.ucr.edu $ cat testFile2
+as
+asdf
+jwong066@hammer.cs.ucr.edu $ cat testFile1
+as
+asdf
+jwong066@hammer.cs.ucr.edu $ echo Foro got to do a few tests,                              echo         Nonexistent files in io redirection
+Nonexistent files in io redirection
+jwong066@hammer.cs.ucr.edu $ >None     ls
+bin  LICENSE  Makefile	README.md  src	testDir  testFile  testFile1  testFile2  testFile3  testFile4  testFile4NoWr  testFile5  tests
+jwong066@hammer.cs.ucr.edu $ >nonexistent
+jwong066@hammer.cs.ucr.edu $ cat n     ls
+bin  LICENSE  Makefile	nonexistent  README.md	src  testDir  testFile	testFile1  testFile2  testFile3  testFile4  testFile4NoWr  testFile5  tests
+jwong066@hammer.cs.ucr.edu $ cat nonexistet nt
+jwong066@hammer.cs.ucr.edu $ >>  >>l  no            >>         nonexistent1
+jwong066@hammer.cs.ucr.edu $ cat     ls
+bin  LICENSE  Makefile	nonexistent  nonexistent1  README.md  src  testDir  testFile  testFile1  testFile2  testFile3  testFile4  testFile4NoWr  testFile5  tests
+jwong066@hammer.cs.ucr.edu $ cat nonexistent  1
+jwong066@hammer.cs.ucr.edu $ <        <   N nonexistent2
+Open: No such file or directory
+jwong066@hammer.cs.ucr.edu $           <<< nonexistent2
+jwong066@hammer.cs.ucr.edu $ ls
+bin  LICENSE  Makefile	nonexistent  nonexistent1  README.md  src  testDir  testFile  testFile1  testFile2  testFile3  testFile4  testFile4NoWr  testFile5  tests
+jwong066@hammer.cs.ucr.edu $ echo I Inputing nonexistent files does not re  create a file
+Inputing nonexistent files does not create a file
+jwong066@hammer.cs.ucr.edu $ ls       >  nonexistent3 2
+jwong066@hammer.cs.ucr.edu $ ls
+bin	 Makefile     nonexistent1  README.md  testDir	 testFile1  testFile3  testFile4NoWr  tests
+LICENSE  nonexistent  nonexistent2  src        testFile  testFile2  testFile4  testFile5
+jwong066@hammer.cs.ucr.edu $ cat nonexistent2
+bin
+LICENSE
+Makefile
+nonexistent
+nonexistent1
+nonexistent2
+README.md
+src
+testDir
+testFile
+testFile1
+testFile2
+testFile3
+testFile4
+testFile4NoWr
+testFile5
+tests
+jwong066@hammer.cs.ucr.edu $ pwd        >>   nonexistent2
+jwong066@hammer.cs.ucr.edu $ cat nonexist            cat nonexistent2
+bin
+LICENSE
+Makefile
+nonexistent
+nonexistent1
+nonexistent2
+README.md
+src
+testDir
+testFile
+testFile1
+testFile2
+testFile3
+testFile4
+testFile4NoWr
+testFile5
+tests
+/home/csmajs/jwong066/CS100/Assn/rshell
+jwong066@hammer.cs.ucr.edu $ pwd        >>    none existent 3
+pwd: ignoring non-option arguments
+jwong066@hammer.cs.ucr.edu $ pwd    >>  nonexistent23 3  3      #Creating file using append
+jwong066@hammer.cs.ucr.edu $ cat     ls
+bin	 Makefile     nonexistent1  nonexistent3  src	   testFile   testFile2  testFile4	testFile5
+LICENSE  nonexistent  nonexistent2  README.md	  testDir  testFile1  testFile3  testFile4NoWr	tests
+jwong066@hammer.cs.ucr.edu $ cat nonexistent3
+/home/csmajs/jwong066/CS100/Assn/rshell
+jwong066@hammer.cs.ucr.edu $ g++    man in      >       2>      nonexistent4
+jwong066@hammer.cs.ucr.edu $ cat     ls
+bin	 Makefile     nonexistent1  nonexistent3  README.md  testDir   testFile1  testFile3  testFile4NoWr  tests
+LICENSE  nonexistent  nonexistent2  nonexistent4  src	     testFile  testFile2  testFile4  testFile5
+jwong066@hammer.cs.ucr.edu $ cat nonexistent4
+g++: error: main: No such file or directory
+g++: fatal error: no input files
+compilation terminated.
+jwong066@hammer.cs.ucr.edu $ g++     main     2>>   nonextent4
+jwong066@hammer.cs.ucr.edu $ ls
+bin	 Makefile     nonexistent1  nonexistent3  nonextent4  src      testFile   testFile2  testFile4	    testFile5
+LICENSE  nonexistent  nonexistent2  nonexistent4  README.md   testDir  testFile1  testFile3  testFile4NoWr  tests
+jwong066@hammer.cs.ucr.edu $ cat       nonextent4
+g++: error: main: No such file or directory
+g++: fatal error: no input files
+compilation terminated.
+jwong066@hammer.cs.ucr.edu $ ca  ppwd    opw   pwd        2>             g++ main      2>>    nonexistent5
+jwong066@hammer.cs.ucr.edu $ ls
+bin	 Makefile     nonexistent1  nonexistent3  nonexistent5	README.md  testDir   testFile1	testFile3  testFile4NoWr  tests
+LICENSE  nonexistent  nonexistent2  nonexistent4  nonextent4	src	   testFile  testFile2	testFile4  testFile5
+jwong066@hammer.cs.ucr.edu $ cat nonexistent4 5
+g++: error: main: No such file or directory
+g++: fatal error: no input files
+compilation terminated.
+jwong066@hammer.cs.ucr.edu $ echo DONE
+DONE
+jwong066@hammer.cs.ucr.edu $ exit
+[s%%%%%%%%%%[u[0;32mjwong066[0;36m@[0;32mcs100[0;36m:[0;32m~/CS100/Assn/rshell[0;95m (redirect) [0;36m$[0m exit
+exit
+~
+jwong066@hammer $ exit
+exit
+
+Script done on Mon 18 May 2015 04:49:37 AM PDT
