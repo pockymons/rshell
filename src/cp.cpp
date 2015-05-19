@@ -232,9 +232,10 @@ int main(int argc, char** argv)
 		exit(1);
 	}
 
-	struct stat s;
-	if(stat(argv[2], &s) != -1)
+	ifstream test(argv[2]);
+	if(test.good())
 	{
+		// Files exists
 		cerr << "File exists already" << endl;
 		exit(1);
 	}
