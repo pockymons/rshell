@@ -574,24 +574,23 @@ void myPipe(vector<vector<char*>>& args, vector<vector<triple<string, string, in
 
 int main()
 {
-	//Hostname/loginname won't change
-	char* loginName = getlogin();
-	if(!loginName)//Returns NULL if fails
-	{
-		perror("Login error");
-		exit(1);
-	}
-
-	char hostName[64];
-	int hostStatus = gethostname(hostName, sizeof(hostName));
-	if(hostStatus == -1)// hostatus is -1 for error
-	{
-		perror("Hostname error");
-		exit(1);
-	}
-
 	while(true) //Shell runs until the exit command
 	{
+		char* loginName = getlogin();
+		if(!loginName)//Returns NULL if fails
+		{
+			perror("Login error");
+			exit(1);
+		}
+
+		char hostName[128];
+		int hostStatus = gethostname(hostName, sizeof(hostName));
+		if(hostStatus == -1)// hostatus is -1 for error
+		{
+			perror("Hostname error");
+			exit(1);
+		}
+
 		cout << loginName << "@" << hostName << " $ "; // Prints command prompt
 		string commandLine;
 		getline(cin, commandLine); 
