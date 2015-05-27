@@ -572,6 +572,23 @@ void myPipe(vector<vector<char*>>& args, vector<vector<triple<string, string, in
 	_exit(0);
 }
 
+//3 choices:
+//cd <PATH> will change working directory to PATH
+//cd will go to home directory
+//cd - will go to previous working directory 
+void changeDirectory(char* path)
+{
+	if(path == NULL)
+	{
+	}
+	else if(strcmp(path, "-") == 0)
+	{
+	}
+	else // is PATH
+	{
+	}
+}
+
 int main()
 {
 	while(true) //Shell runs until the exit command
@@ -871,6 +888,19 @@ int main()
 			// If args size is 1, there are no pipes
 			if(args.size() == 1)
 			{
+				// Checks for cd
+				if(args.at(0).size() > 0 && strcmp(args.at(0).at(0), "cd") == 0)
+				{
+					char cdPath* = NULL;
+					//If there is an argument
+					if(args.at(0).size() > 1)
+					{
+						cdPath = args.at(0).at(1);
+					}
+					changeDirectory(cdPath);
+					continue;
+				}
+
 				// Executes commands/takes care of errors
 				int pid = fork();
 				if(pid == -1) // If fork fails
