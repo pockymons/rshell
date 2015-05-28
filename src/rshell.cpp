@@ -622,13 +622,23 @@ int changeDirectory(char* path)
 	}
 	else // is PATH
 	{
-		char fullPath[PATH_MAX];
-		if(NULL == realpath(path, fullPath))
+		string strPath = path;
+		if(strPath.size() > 0 && strPath.at(0) == '~')
 		{
-			perror("Finding full path");
+			if(strPath.size() == 1 || strPath.at(1) == '/')
+			{
+				strPath = strPath.substr(1);
+				string tempString = getenv("HOME");
+				strPath = tempString + strPath;
+			}
+		}
+		char fullPath[PATH_MAX];
+		if(NULL == realpath(strPath.c_str(), fullPath))
+		{
+			perror("Finding full path"); 
 			return -1;
 		}
-		if(-1 == chdir(path))
+		if(-1 == chdir(fullPath))
 		{
 			perror("Changing directory");
 			return -1;
