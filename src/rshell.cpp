@@ -677,6 +677,17 @@ int main()
 		}
 		
 		string currentWorkingDir = getenv("PWD");
+		string tempHomeDir = getenv("HOME");
+		if(tempHomeDir == currentWorkingDir.substr(0, tempHomeDir.size()))
+		{
+			currentWorkingDir = currentWorkingDir.substr(tempHomeDir.size());
+			// Probably won't happen, just in case
+			if(currentWorkingDir.size() >0 && currentWorkingDir.at(0) != '/')
+			{
+				currentWorkingDir = "/" + currentWorkingDir;
+			}
+			currentWorkingDir = "~" + currentWorkingDir;
+		}
 		cout << loginName << "@" << hostName << ":" << currentWorkingDir << " $ "; // Prints command prompt
 		string commandLine;
 		getline(cin, commandLine); 
