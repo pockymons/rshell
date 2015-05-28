@@ -15,6 +15,8 @@
 #include <cstring>
 #include <cmath>
 #include <stdlib.h>
+#include <limits.h>
+#include <stdlib.h>
 
 using namespace std;
 using namespace boost;
@@ -577,7 +579,8 @@ void myPipe(vector<vector<char*>>& args, vector<vector<triple<string, string, in
 //cd <PATH> will change working directory to PATH
 //cd will go to home directory
 //cd - will go to previous working directory 
-void changeDirectory(char* path)
+// Returns -1 if error, like a lot of syscalls; I don't use the return value, but just in case for later
+int changeDirectory(char* path)
 {
 	if(path == NULL)
 	{
@@ -585,17 +588,17 @@ void changeDirectory(char* path)
 		if(-1 == chdir(newCurrentDir = getenv("HOME")))
 		{
 			perror("Changing directory");
-			exit(1);
+			return -1;
 		}
 		if(-1 == setenv("OLDPWD", getenv("PWD"), 1))
 		{
 			perror("Setting old pwd");
-			exit(1);
+			return -1;
 		}
 		if(-1 == setenv("PWD", newCurrentDir, 1))
 		{
 			perror("Setting pwd");
-			exit(1);
+			return -1;
 		}
 	}
 	else if(strcmp(path, "-") == 0)
@@ -604,37 +607,44 @@ void changeDirectory(char* path)
 		if(-1 == chdir(newCurrentDir))
 		{
 			perror("Changing directory");
-			exit(1);
+			return -1;
 		}
 		if(-1 == setenv("OLDPWD", getenv("PWD"), 1))
 		{
 			perror("Setting old pwd");
-			exit(1);
+			return -1;
 		}
 		if(-1 == setenv("PWD", newCurrentDir, 1))
 		{
 			perror("Setting pwd");
-			exit(1);
+			return -1;
 		}
 	}
 	else // is PATH
 	{
+		char fullPath[PATH_MAX];
+		if(NULL == realpath(path, fullPath))
+		{
+			perror("Finding full path");
+			return -1;
+		}
 		if(-1 == chdir(path))
 		{
 			perror("Changing directory");
-			exit(1);
+			return -1;
 		}
 		if(-1 == setenv("OLDPWD", getenv("PWD"), 1))
 		{
 			perror("Setting old pwd");
-			exit(1);
+			return -1;
 		}
-		if(-1 == setenv("PWD", path, 1))
+		if(-1 == setenv("PWD", fullPath, 1))
 		{
 			perror("Setting pwd");
-			exit(1);
+			return -1;
 		}
 	}
+	return 0;
 }
 
 int main()
