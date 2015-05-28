@@ -14,6 +14,7 @@
 #include <cstdio>
 #include <cstring>
 #include <cmath>
+#include <stdlib.h>
 
 using namespace std;
 using namespace boost;
@@ -580,12 +581,59 @@ void changeDirectory(char* path)
 {
 	if(path == NULL)
 	{
+		char* newCurrentDir;
+		if(-1 == chdir(newCurrentDir = getenv("HOME")))
+		{
+			perror("Changing directory");
+			exit(1);
+		}
+		if(-1 == setenv("OLDPWD", getenv("PWD"), 1))
+		{
+			perror("Setting old pwd");
+			exit(1);
+		}
+		if(-1 == setenv("PWD", newCurrentDir, 1))
+		{
+			perror("Setting pwd");
+			exit(1);
+		}
 	}
 	else if(strcmp(path, "-") == 0)
 	{
+		char* newCurrentDir = getenv("OLDPWD");
+		if(-1 == chdir(newCurrentDir))
+		{
+			perror("Changing directory");
+			exit(1);
+		}
+		if(-1 == setenv("OLDPWD", getenv("PWD"), 1))
+		{
+			perror("Setting old pwd");
+			exit(1);
+		}
+		if(-1 == setenv("PWD", newCurrentDir, 1))
+		{
+			perror("Setting pwd");
+			exit(1);
+		}
 	}
 	else // is PATH
 	{
+		if(-1 == chdir(path))
+		{
+			perror("Changing directory");
+			exit(1);
+		}
+		if(-1 == setenv("OLDPWD", getenv("PWD"), 1))
+		{
+			perror("Setting old pwd");
+			exit(1);
+		}
+		if(-1 == setenv("PWD", path, 1))
+		{
+			perror("Setting pwd");
+			exit(1);
+		}
 	}
 }
 
@@ -607,8 +655,9 @@ int main()
 			perror("Hostname error");
 			exit(1);
 		}
-
-		cout << loginName << "@" << hostName << " $ "; // Prints command prompt
+		
+		string currentWorkingDir = getenv("PWD");
+		cout << loginName << "@" << hostName << ":" << currentWorkingDir << " $ "; // Prints command prompt
 		string commandLine;
 		getline(cin, commandLine); 
 		if(commandLine.size() == 0)
@@ -891,7 +940,7 @@ int main()
 				// Checks for cd
 				if(args.at(0).size() > 0 && strcmp(args.at(0).at(0), "cd") == 0)
 				{
-					char cdPath* = NULL;
+					char* cdPath = NULL;
 					//If there is an argument
 					if(args.at(0).size() > 1)
 					{
