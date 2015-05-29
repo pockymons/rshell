@@ -657,8 +657,22 @@ int changeDirectory(char* path)
 	return 0;
 }
 
+void ctrlChandler(int h)
+{
+	cout << endl;
+}
 int main()
 {
+	// Signal handling
+	struct sigaction ctrlCParentHandler = {0};
+	ctrlCParentHandler.sa_handler = ctrlChandler;
+	
+	if(-1 == sigaction(SIGINT, &ctrlCParentHandler, NULL))
+	{
+		perror("Parent sigaction SIGINT");
+		exit(1);
+	}
+
 	while(true) //Shell runs until the exit command
 	{
 		char* loginName = getlogin();
@@ -690,6 +704,7 @@ int main()
 		}
 		cout << loginName << "@" << hostName << ":" << currentWorkingDir << " $ "; // Prints command prompt
 		string commandLine;
+		cin.clear();
 		getline(cin, commandLine); 
 		if(commandLine.size() == 0)
 		{
@@ -992,13 +1007,25 @@ int main()
 				{
 					if(pid == 0) // Child process
 					{
+						struct sigaction childCtrlCHandler = {0};
+						childCtrlCHandler.sa_handler = SIG_DFL;
+						if(-1 == sigaction(SIGINT, &childCtrlCHandler, NULL))
+						{
+							perror("Child sigaction SIGINT");
+							_exit(1);
+						}
 						// Reminder: vector<triple<string, string>> ioFiles; First string is which io redirect (<, >, >>), second is file
 						ioAndExec(args, ioFiles, 0);
 					}
 					else // Parent process
 					{
 						int status; 
-						int waitVar = wait(&status);
+						int waitVar;
+						do
+						{
+							waitVar = wait(&status);
+						}
+						while(waitVar == -1 && errno == EINTR);
 						if(waitVar == -1) // If child process has error
 						{
 							perror("Child process error");
@@ -1009,6 +1036,21 @@ int main()
 						}
 						else
 						{
+							/*
+							char ps[3];
+							ps[0] = 'p';
+							ps[1] = 's';
+							ps[2] = '\0';
+							char* test[2];
+							test[0] = ps;
+							test[1] = NULL;
+							int testpid = fork();
+							if(testpid == 0)
+							{
+								execvp("ps", test);
+							}
+							wait(NULL);
+							*/
 							int exitStatus = WEXITSTATUS(status); // Checks whether returns 0/1 when exiting
 							if(exitStatus == 1) // If unsuccessful command
 							{
