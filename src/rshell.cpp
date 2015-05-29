@@ -1036,21 +1036,6 @@ int main()
 						}
 						else
 						{
-							/*
-							char ps[3];
-							ps[0] = 'p';
-							ps[1] = 's';
-							ps[2] = '\0';
-							char* test[2];
-							test[0] = ps;
-							test[1] = NULL;
-							int testpid = fork();
-							if(testpid == 0)
-							{
-								execvp("ps", test);
-							}
-							wait(NULL);
-							*/
 							int exitStatus = WEXITSTATUS(status); // Checks whether returns 0/1 when exiting
 							if(exitStatus == 1) // If unsuccessful command
 							{
@@ -1086,12 +1071,24 @@ int main()
 				{
 					if(pid == 0) // Child process
 					{
+						struct sigaction childCtrlCHandler = {0};
+						childCtrlCHandler.sa_handler = SIG_DFL;
+						if(-1 == sigaction(SIGINT, &childCtrlCHandler, NULL))
+						{
+							perror("Child sigaction SIGINT");
+							_exit(1);
+						}
 						myPipe(args, ioFiles);
 					}
 					else
 					{
 						int status; 
-						int waitVar = wait(&status);
+						int waitVar;
+						do
+						{
+							waitVar = wait(&status);
+						}
+						while(waitVar == -1 && errno == EINTR);
 						if(waitVar == -1) // If child process has error
 						{
 							perror("Child process error");
