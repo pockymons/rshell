@@ -61,6 +61,8 @@ $ bin/rshell
 	```
 
 * You cannot pipe too many times, just like in bash. If you pipe too many times you will get an error, something like  `Fork: Resource temporarily unavailable`. You can pipe approximately 15 times.
+* You can only change directories if the full path of the directory is 4096 characters or less.
+* In the testing file, signals.script, the shell is exited a few times (my mistake). After exiting, I immediately enter again. Also, in that testing file, there are a few tests that should not be there. The "tests" are only there because I forgot about some of the functionality of my shell. One of the tests that should not be there is the `^C` test with the bash script. I forgot that I can't do bash scripts in the shell.
 
 ### ls
 * The GNU `ls` program will output the year in the `-l` flag, if the last modified date is older than 6 months. My program does not.

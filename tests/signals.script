@@ -1,0 +1,220 @@
+Script started on Sat 30 May 2015 12:57:59 AM PDT
+~
+jwong066@hammer $ cs100
+[0;91m
+===============================================================================
+|                                                                             |
+| You have enabled settings specific for cs100.  Everything you do is being   |
+| recorded to measure your progress in the class.                             |
+|                                                                             |
+| Important commands for the class:                                           |
+|   * calcgrade.sh          displays a detailed breakdown of your grade       |
+|   * checksyscalls.sh      is your cpp file doing proper error checking?     |
+|   * typespeed             practice typing unix commands                     |
+|                                                                             |
+| Important commands for general C++ programming:                             |
+|   * make                  don't call g++ manually; let make do the work!    |
+|   * gdb                   the GNU debugger                                  |
+|   * valgrind              get rid of your memory leaks                      |
+|   * cppcheck              static analysis tool                              |
+|   * man                   find help about any syscall / terminal command    |
+|                                                                             |
+===============================================================================
+[0m
+[s%%%%%%%%%%[u[0;32mjwong066[0;36m@[0;32mcs100[0;36m:[0;32m~[0;95m [0;36m$[0m cd CS100/Assn/rh[Kshell
+[s%%%%%%%%%%[u[0;32mjwong066[0;36m@[0;32mcs100[0;36m:[0;32m~/CS100/Assn/rshell[0;95m (signals) [0;36m$[0m bin/rshell
+jwong066@hammer.cs.ucr.edu:~/CS100/Assn/rshell $ echo I will          This is the shell
+This is the shell
+jwong066@hammer.cs.ucr.edu:~/CS100/Assn/rshell $ echo I will be testing cd fori   irst
+I will be testing cd first
+jwong066@hammer.cs.ucr.edu:~/CS100/Assn/rshell $ cd - #previous directory test
+jwong066@hammer.cs.ucr.edu:~ $ cd - #previous directory test
+jwong066@hammer.cs.ucr.edu:~/CS100/Assn/rshell $ cd - #previous directory test, multiple times
+jwong066@hammer.cs.ucr.edu:~ $ cd - 
+jwong066@hammer.cs.ucr.edu:~/CS100/Assn/rshell $ cd -
+jwong066@hammer.cs.ucr.edu:~ $ cd - 
+jwong066@hammer.cs.ucr.edu:~/CS100/Assn/rshell $ cd -
+jwong066@hammer.cs.ucr.edu:~ $ cd -
+jwong066@hammer.cs.ucr.edu:~/CS100/Assn/rshell $ cd -
+jwong066@hammer.cs.ucr.edu:~ $ cd -
+jwong066@hammer.cs.ucr.edu:~/CS100/Assn/rshell $ cd                        cd          -     #with sap  paces
+jwong066@hammer.cs.ucr.edu:~ $          cd                -       #with spaes  ces
+jwong066@hammer.cs.ucr.edu:~/CS100/Assn/rshell $ cd      #home cd test
+jwong066@hammer.cs.ucr.edu:~ $        cd         #home cd test
+jwong066@hammer.cs.ucr.edu:~ $           cd          #home cd test
+jwong066@hammer.cs.ucr.edu:~ $ cd           #multiple cd (home)
+jwong066@hammer.cs.ucr.edu:~ $ cd 
+jwong066@hammer.cs.ucr.edu:~ $ cd
+jwong066@hammer.cs.ucr.edu:~ $ cd
+jwong066@hammer.cs.ucr.edu:~ $ cd
+jwong066@hammer.cs.ucr.edu:~ $ cd
+jwong066@hammer.cs.ucr.edu:~ $ cd
+jwong066@hammer.cs.ucr.edu:~ $ cd
+jwong066@hammer.cs.ucr.edu:~ $ cd
+jwong066@hammer.cs.ucr.edu:~ $ cd      CS100      # cd  , relative path
+jwong066@hammer.cs.ucr.edu:~/CS100 $      cd          Assn/rhs  shell         #    cd  , relative path, 2 directories
+jwong066@hammer.cs.ucr.edu:~/CS100/Assn/rshell $ cd
+jwong066@hammer.cs.ucr.edu:~ $ cd        CS100/r Asshl /rshell        n/rhs  shell	          #cd  , relative path, 3 directories
+jwong066@hammer.cs.ucr.edu:~/CS100/Assn/rshell $ cd
+jwong066@hammer.cs.ucr.edu:~ $ cd            CS100/Assn/rh shell/src          #cd, relative path, 4 directories
+jwong066@hammer.cs.ucr.edu:~/CS100/Assn/rshell/src $ cd
+jwong066@hammer.cs.ucr.edu:~ $ cd CS19 00/Assn/rh shell/src       #cd  , relative path, 4 p directories
+jwong066@hammer.cs.ucr.edu:~/CS100/Assn/rshell/src $ cd     cd       ~/                  
+jwong066@hammer.cs.ucr.edu:~ $ cd          CS100/         #cd, relative path, / at the end
+jwong066@hammer.cs.ucr.edu:~/CS100 $ cd
+jwong066@hammer.cs.ucr.edu:~ $ cd          CS100/Assn/          #cd  , relative path, / at the end 2  , 2 directories
+jwong066@hammer.cs.ucr.edu:~/CS100/Assn $ cd 
+jwong066@hammer.cs.ucr.edu:~ $ cd       CS100/Assn/rshell/	#cd, ral  elative path, / at the end, 3 directories
+jwong066@hammer.cs.ucr.edu:~/CS100/Assn/rshell $ cd
+jwong066@hammer.cs.ucr.edu:~ $ cd        ~               cd CS100/Assn/rh shell/					#cd, rl elative path, /a t    at the end, 3   4 directories
+jwong066@hammer.cs.ucr.edu:~/CS100/Assn/rshell $ ec  cd  src   cd    ~      #tilde
+jwong066@hammer.cs.ucr.edu:~ $ cd -
+jwong066@hammer.cs.ucr.edu:~/CS100/Assn/rshell $        cd     ~/; CS100       #tilde path
+jwong066@hammer.cs.ucr.edu:~/CS100 $ cd -
+jwong066@hammer.cs.ucr.edu:~/CS100/Assn/rshell $ cd     ~/CS100/Assn      #tilde path
+jwong066@hammer.cs.ucr.edu:~/CS100/Assn $ cd -
+jwong066@hammer.cs.ucr.edu:~/CS100/Assn/rshell $ cd         ~/      #tidl  lde with t h sl  / at the end
+jwong066@hammer.cs.ucr.edu:~ $ cd -
+jwong066@hammer.cs.ucr.edu:~/CS100/Assn/rshell $ cd      ~/      #tilde              CS100/	#tilde path with / at the end
+jwong066@hammer.cs.ucr.edu:~/CS100 $ cd -
+jwong066@hammer.cs.ucr.edu:~/CS100/Assn/rshell $       cd        /home/csmajs/jwong066      #Absolute path
+jwong066@hammer.cs.ucr.edu:~ $         cd /home/csmajs/jwong066/CS61          #a Absolute path
+jwong066@hammer.cs.ucr.edu:~/CS61 $ cd  / h  home/csmajs/jwong066/CS100/Assn        #Absolute path
+jwong066@hammer.cs.ucr.edu:~/CS100/Assn $ cd  /home/csj majs/jwong066/CS100/Assn/rshell   #Absolute path
+jwong066@hammer.cs.ucr.edu:~/CS100/Assn/rshell $ cd       .    /home/csj majs/jwong066/CS61/       #Absolute path with/  / at the end
+jwong066@hammer.cs.ucr.edu:~/CS61 $          cd      .         #cd current directory
+jwong066@hammer.cs.ucr.edu:~/CS61 $          cd        ./       #cd current directory
+jwong066@hammer.cs.ucr.edu:~/CS61 $         cd         ..        #cd         up one level
+jwong066@hammer.cs.ucr.edu:~ $       cd      CS100
+jwong066@hammer.cs.ucr.edu:~/CS100 $ cd          ../       #cd up one level
+jwong066@hammer.cs.ucr.edu:~ $ echo now     Now i I will test cd  the different cd commands together
+Now I will test the different cd commands together
+jwong066@hammer.cs.ucr.edu:~ $    cd      -          #cd previous then cd home
+jwong066@hammer.cs.ucr.edu:~/CS100 $        cd        #cd previous then cd home
+jwong066@hammer.cs.ucr.edu:~ $ 
+jwong066@hammer.cs.ucr.edu:~ $ 
+jwong066@hammer.cs.ucr.edu:~ $           cd       -          #cd previous ten  hen cd to path
+jwong066@hammer.cs.ucr.edu:~/CS100 $       cd /home/csmajs/jwong066/CS100/CS  Assn/rshell       #cd previous then cd to path
+jwong066@hammer.cs.ucr.edu:~/CS100/Assn/rshell $        cd         
+jwong066@hammer.cs.ucr.edu:~/CS100/Assn/rshell $ 
+jwong066@hammer.cs.ucr.edu:~/CS100/Assn/rshell $        cd      #cd home then cd to re  previous
+jwong066@hammer.cs.ucr.edu:~ $     cd     -        #cd home then cd to previous
+jwong066@hammer.cs.ucr.edu:~/CS100/Assn/rshell $         
+Syntax error
+[s%%%%%%%%%%[u[0;32mjwong066[0;36m@[0;32mcs100[0;36m:[0;32m~/CS100/Assn/rshell[0;95m (signals) [0;36m$[0m bin/rshell
+jwong066@hammer.cs.ucr.edu:~/CS100/Assn/rshell $ echo not exactly sure what happend there        ned
+not exactly sure what happened
+jwong066@hammer.cs.ucr.edu:~/CS100/Assn/rshell $          cd          #cd     hojm  me then cd to path
+jwong066@hammer.cs.ucr.edu:~ $ cd     CS100/Assn/rshell      #cd home then cd to path
+jwong066@hammer.cs.ucr.edu:~/CS100/Assn/rshell $ 
+jwong066@hammer.cs.ucr.edu:~/CS100/Assn/rshell $ 
+jwong066@hammer.cs.ucr.edu:~/CS100/Assn/rshell $    cd   /CS100/      home/j csj majs/jwong066/CS100         #cd path then cd previus  pis   ous
+jwong066@hammer.cs.ucr.edu:~/CS100 $ cd    -   #cd path then cd previous
+jwong066@hammer.cs.ucr.edu:~/CS100/Assn/rshell $      cd   src       #cd path then cd home
+jwong066@hammer.cs.ucr.edu:~/CS100/Assn/rshell/src $ cd   #cd path then cd home
+jwong066@hammer.cs.ucr.edu:~ $ 
+jwong066@hammer.cs.ucr.edu:~ $ 
+jwong066@hammer.cs.ucr.edu:~ $ echo now     C cd testing is now done
+cd testing is now done
+jwong066@hammer.cs.ucr.edu:~ $ 
+jwong066@hammer.cs.ucr.edu:~ $ 
+jwong066@hammer.cs.ucr.edu:~ $ echo now i I will test ctrl-C (SIGINT)
+now I will test ctrl-C (SIGINT)
+jwong066@hammer.cs.ucr.edu:~ $ ^C
+jwong066@hammer.cs.ucr.edu:~ $ ^C
+jwong066@hammer.cs.ucr.edu:~ $ ^C
+jwong066@hammer.cs.ucr.edu:~ $ ^C
+jwong066@hammer.cs.ucr.edu:~ $ ^C
+jwong066@hammer.cs.ucr.edu:~ $ ^C
+jwong066@hammer.cs.ucr.edu:~ $ ^C
+jwong066@hammer.cs.ucr.edu:~ $ ^C
+jwong066@hammer.cs.ucr.edu:~ $ ^C
+jwong066@hammer.cs.ucr.edu:~ $ # tested ctrlC on shell itsell f
+Command execution error: No such file or directory
+jwong066@hammer.cs.ucr.edu:~ $ woo   ech    #tested ctrlC on shell itself
+terminate called after throwing an instance of 'std::out_of_range'
+  what():  basic_string::at
+Aborted
+[s%%%%%%%%%%[u[0;32mjwong066[0;36m@[0;32mcs100[0;36m:[0;32m~/CS100/Assn/rshell[0;95m (signals) [0;36m$[0m echo[K[K[K[Kbin/rshell
+jwong066@hammer.cs.ucr.edu:~/CS100/Assn/rshell $ echo sorry forgot that shell doesn't handle comments like that
+sorry forgot that shell doesn't handle comments like that
+jwong066@hammer.cs.ucr.edu:~/CS100/Assn/rshell $ echo tested ctrlCon she       on shl ell itself
+tested ctrlC on shell itself
+jwong066@hammer.cs.ucr.edu:~/CS100/Assn/rshell $ ^C
+jwong066@hammer.cs.ucr.edu:~/CS100/Assn/rshell $ ^C
+jwong066@hammer.cs.ucr.edu:~/CS100/Assn/rshell $ ^C
+jwong066@hammer.cs.ucr.edu:~/CS100/Assn/rshell $ ^C
+jwong066@hammer.cs.ucr.edu:~/CS100/Assn/rshell $ ^C
+jwong066@hammer.cs.ucr.edu:~/CS100/Assn/rshell $ ^C
+jwong066@hammer.cs.ucr.edu:~/CS100/Assn/rshell $ ^C
+jwong066@hammer.cs.ucr.edu:~/CS100/Assn/rshell $ ^C
+jwong066@hammer.cs.ucr.edu:~/CS100/Assn/rshell $ ^C
+jwong066@hammer.cs.ucr.edu:~/CS100/Assn/rshell $ ^C
+jwong066@hammer.cs.ucr.edu:~/CS100/Assn/rshell $ ^C
+jwong066@hammer.cs.ucr.edu:~/CS100/Assn/rshell $ ^C
+jwong066@hammer.cs.ucr.edu:~/CS100/Assn/rshell $ ^C
+jwong066@hammer.cs.ucr.edu:~/CS100/Assn/rshell $ ^C
+jwong066@hammer.cs.ucr.edu:~/CS100/Assn/rshell $ ^C
+jwong066@hammer.cs.ucr.edu:~/CS100/Assn/rshell $ ^C
+jwong066@hammer.cs.ucr.edu:~/CS100/Assn/rshell $ ^C
+jwong066@hammer.cs.ucr.edu:~/CS100/Assn/rshell $ ^C
+jwong066@hammer.cs.ucr.edu:~/CS100/Assn/rshell $ ^C
+jwong066@hammer.cs.ucr.edu:~/CS100/Assn/rshell $ ^C
+jwong066@hammer.cs.ucr.edu:~/CS100/Assn/rshell $ ^C
+jwong066@hammer.cs.ucr.edu:~/CS100/Assn/rshell $ cat     #ctrlC on program
+^C
+jwong066@hammer.cs.ucr.edu:~/CS100/Assn/rshell $ ps
+  PID TTY          TIME CMD
+15707 pts/6    00:00:00 bash
+16253 pts/6    00:00:00 rshell
+16265 pts/6    00:00:00 ps
+jwong066@hammer.cs.ucr.edu:~/CS100/Assn/rshell $ ^C
+jwong066@hammer.cs.ucr.edu:~/CS100/Assn/rshell $ ^C
+jwong066@hammer.cs.ucr.edu:~/CS100/Assn/rshell $ ^C
+jwong066@hammer.cs.ucr.edu:~/CS100/Assn/rshell $ ^C
+jwong066@hammer.cs.ucr.edu:~/CS100/Assn/rshell $ ^C
+jwong066@hammer.cs.ucr.edu:~/CS100/Assn/rshell $ ps
+  PID TTY          TIME CMD
+15707 pts/6    00:00:00 bash
+16253 pts/6    00:00:00 rshell
+16267 pts/6    00:00:00 ps
+jwong066@hammer.cs.ucr.edu:~/CS100/Assn/rshell $ grep
+Usage: grep [OPTION]... PATTERN [FILE]...
+Try `grep --help' for more information.
+jwong066@hammer.cs.ucr.edu:~/CS100/Assn/rshell $ cat         longjobt Test   #test program that lasts f v very long
+^C
+jwong066@hammer.cs.ucr.edu:~/CS100/Assn/rshell $ ps
+  PID TTY          TIME CMD
+15707 pts/6    00:00:00 bash
+16253 pts/6    00:00:00 rshell
+16349 pts/6    00:00:00 ps
+jwong066@hammer.cs.ucr.edu:~/CS100/Assn/rshell $ while true; do echo 1 ; sleep 1; done   #d ctrl C with script
+Command execution error: No such file or directory
+Command execution error: No such file or directory
+Command execution error: No such file or directory
+jwong066@hammer.cs.ucr.edu:~/CS100/Assn/rshell $ long job    jobTest 
+^C
+jwong066@hammer.cs.ucr.edu:~/CS100/Assn/rshell $ ps
+  PID TTY          TIME CMD
+15707 pts/6    00:00:00 bash
+16253 pts/6    00:00:00 rshell
+16375 pts/6    00:00:00 ps
+jwong066@hammer.cs.ucr.edu:~/CS100/Assn/rshell $ ls  ;     ls  cat   ; ls   #connectors with ctrl C
+bin	 longggggjob.cpp  Makefile     nonexistent1  nonexistent3  nonexistent5  README.md  testDir   testFile1  testFile3  testFile4NoWr  testFile6
+LICENSE  longjobTest	  nonexistent  nonexistent2  nonexistent4  nonextent4	 src	    testFile  testFile2  testFile4  testFile5	   tests
+^C
+bin	 longggggjob.cpp  Makefile     nonexistent1  nonexistent3  nonexistent5  README.md  testDir   testFile1  testFile3  testFile4NoWr  testFile6
+LICENSE  longjobTest	  nonexistent  nonexistent2  nonexistent4  nonextent4	 src	    testFile  testFile2  testFile4  testFile5	   tests
+jwong066@hammer.cs.ucr.edu:~/CS100/Assn/rshell $ ps
+  PID TTY          TIME CMD
+15707 pts/6    00:00:00 bash
+16253 pts/6    00:00:00 rshell
+16442 pts/6    00:00:00 ps
+jwong066@hammer.cs.ucr.edu:~/CS100/Assn/rshell $ exit
+[s%%%%%%%%%%[u[0;32mjwong066[0;36m@[0;32mcs100[0;36m:[0;32m~/CS100/Assn/rshell[0;95m (signals) [0;36m$[0m exit
+exit
+~
+jwong066@hammer $ exit
+exit
+
+Script done on Sat 30 May 2015 01:25:31 AM PDT
