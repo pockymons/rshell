@@ -17,9 +17,12 @@
 #include <stdlib.h>
 #include <limits.h>
 #include <stdlib.h>
+#include <stack>
 
 using namespace std;
 using namespace boost;
+
+stack<int> backgroundPIDStack;
 
 // Could have used tuple; However, originally, pair was used, so making a triple struct was faster
 template<typename T1, typename T2, typename T3>
@@ -657,21 +660,85 @@ int changeDirectory(char* path)
 	return 0;
 }
 
-void ctrlChandler(int h)
+void nlhandler(int h)
 {
 	cout << endl;
 }
+/*
+void ctrlZhandler(int h)
+{
+	cerr << 1 << endl;
+	backgroundPIDStack.push(getpid());
+
+	struct sigaction ctrlZinhandler = {0};
+	ctrlZinhandler.sa_handler = SIG_DFL;
+	if(-1 == sigaction(SIGTSTP, &ctrlZinhandler, NULL))
+	{
+		perror("sigaction SIGTSTP in handler");
+		_exit(1);
+	}
+	if(0 != raise(SIGTSTP))
+	{
+		cerr << "Raise error" << endl;
+		_exit(1);
+	}
+}
+void fgbghandler(int h)
+{
+	int status = 0;
+	if(-1 == waitpid(backgroundPIDStack.top(), &status, 0))
+	{
+		perror("Wait bg");
+		exit(1);
+	}
+}
+
+bool fgbg()
+{
+	if(backgroundPIDStack.empty())
+	{
+		cerr << "No process in background" << endl;
+		return false;
+	}
+	if(-1 == kill(backgroundPIDStack.top(), SIGCONT))
+	{
+		perror("Continue bg process");
+		exit(1);
+	}
+	return true;
+	if(!fg)// if bg command
+	{
+		struct sigaction fgbgChildhandler = {0};
+		fgbgChildhandler.sa_handler = fgbghandler;
+		if(-1 == sigaction(SIGTSTP, &fgbgChildhandler, NULL))
+		{
+			perror("Child sigaction fgbg");
+			_exit(1);
+		}
+	}
+}
+*/
+
 int main()
 {
 	// Signal handling
 	struct sigaction ctrlCParentHandler = {0};
-	ctrlCParentHandler.sa_handler = ctrlChandler;
+	ctrlCParentHandler.sa_handler = nlhandler;
 	
 	if(-1 == sigaction(SIGINT, &ctrlCParentHandler, NULL))
 	{
 		perror("Parent sigaction SIGINT");
 		exit(1);
 	}
+/*
+	struct sigaction ctrlZParentHandler = {0};
+	ctrlZParentHandler.sa_handler = nlhandler;
+	
+	if(-1 == sigaction(SIGTSTP, &ctrlZParentHandler, NULL))
+	{
+		perror("Parent sigaction SIGTSTP");
+		exit(1);
+	}*/
 
 	while(true) //Shell runs until the exit command
 	{
@@ -984,7 +1051,7 @@ int main()
 			if(args.size() == 1)
 			{
 				// Checks for cd
-				if(args.at(0).size() > 0 && strcmp(args.at(0).at(0), "cd") == 0)
+				if(args.at(0).size() > 1 && strcmp(args.at(0).at(0), "cd") == 0)
 				{
 					char* cdPath = NULL;
 					//If there is an argument
@@ -995,6 +1062,27 @@ int main()
 					changeDirectory(cdPath);
 					continue;
 				}
+				/*
+				if(args.at(0).size() == 2 && strcmp(args.at(0).at(0), "fg") == 0)
+				{
+					if(!fgbg())
+					{
+						continue;
+					}
+					int fgStatus;
+					if(-1 == wait(&fgStatus))
+					{
+						perror("Wait fg");
+						exit(1);
+					}
+					backgroundPIDStack.pop();
+					continue;
+				}
+				if(args.at(0).size() == 2 && strcmp(args.at(0).at(0), "bg") == 0)
+				{
+					fgbg();
+					continue;
+				}*/
 
 				// Executes commands/takes care of errors
 				int pid = fork();
@@ -1014,6 +1102,7 @@ int main()
 							perror("Child sigaction SIGINT");
 							_exit(1);
 						}
+
 						// Reminder: vector<triple<string, string>> ioFiles; First string is which io redirect (<, >, >>), second is file
 						ioAndExec(args, ioFiles, 0);
 					}
@@ -1023,7 +1112,7 @@ int main()
 						int waitVar;
 						do
 						{
-							waitVar = wait(&status);
+							waitVar = waitpid(pid, &status, WUNTRACED);
 						}
 						while(waitVar == -1 && errno == EINTR);
 						if(waitVar == -1) // If child process has error
