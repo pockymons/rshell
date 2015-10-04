@@ -1,9 +1,22 @@
 #Rshell
+**Note: There are bugs and messy/undocumented code but since I am finished with the CS100 course, I will no longer update this project.**:
 This project is a shell that interprets and executes lines of command, including the commands, their arguments, and connectors. 
 It simulates the functionality of the bash shell. This project is made for an assignment for the CS100 course, a course on open
 source software construction, at University of California, Riverside. 
 
-Included is also an implementation of the `ls` program, which is supposed to be as close to the GNU `ls` program as possible. My ls program supports the `-l`, `-a`, and `-R` flags.
+##Features
+Bash commands and signals:
+* `ls` (`-l`, `-a`, `-R` flags)
+* `cp`
+* `mv`
+* `rm` (`-r` flag)
+* `cd`, `cd <PATH>`, and `cd -`
+* `^C`
+Input and Output Redirection
+* `<` and `<<<`
+* `>`, `>>`, `2>`, and `2>>`, where `2` may be any number
+* `|`
+
 ##Dependencies
 rshell requires the Boost Libraries for C++ to be installed. 
 
@@ -63,6 +76,7 @@ $ bin/rshell
 * You cannot pipe too many times, just like in bash. If you pipe too many times you will get an error, something like  `Fork: Resource temporarily unavailable`. You can pipe approximately 15 times.
 * You can only change directories if the full path of the directory is 4096 characters or less.
 * In the testing file, signals.script, the shell is exited a few times (my mistake). After exiting, I immediately enter again. Also, in that testing file, there are a few tests that should not be there. The "tests" are only there because I forgot about some of the functionality of my shell. One of the tests that should not be there is the `^C` test with the bash script. I forgot that I can't do bash scripts in the shell.
+* `>>>` does not work for multiple words
 
 ### ls
 * The GNU `ls` program will output the year in the `-l` flag, if the last modified date is older than 6 months. My program does not.
